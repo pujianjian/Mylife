@@ -1,0 +1,78 @@
+<view class="page">
+  <!-- 顶部蓝色 header -->
+  <view class="header">
+    <view class="header-left">
+      <text class="header-title">用车支出</text>
+    </view>
+    <picker mode="date" value="{{date}}" bindchange="onPickDate">
+      <view class="header-date">
+        <text>{{date}}</text>
+        <text class="header-arrow">⌄</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 支出费用 -->
+  <view class="white-block amount-block">
+    <text class="amount-label">支出费用</text>
+    <view class="amount-row">
+      <text class="amount-symbol">¥</text>
+      <text class="amount-value">{{amount || '0.00'}}</text>
+    </view>
+  </view>
+
+  <!-- 支出类型 -->
+  <view class="white-block type-block">
+    <text class="type-title">支出类型</text>
+    <view class="type-grid">
+      <view
+        class="{{item.itemClass}}"
+        wx:for="{{types}}"
+        wx:key="key"
+        data-type="{{item.key}}"
+        bindtap="onTypeSelect"
+        style="{{item.itemStyle}}"
+      >
+        <view class="type-icon" style="{{item.iconStyle}}">
+          <text>{{item.icon}}</text>
+        </view>
+        <text class="{{item.nameClass}}">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 金额输入 -->
+  <view class="white-block input-block">
+    <text class="input-label">金额</text>
+    <view class="input-row">
+      <text class="input-symbol">¥</text>
+      <input
+        class="input-field"
+        type="digit"
+        placeholder="请输入金额"
+        placeholder-class="input-placeholder"
+        value="{{amount}}"
+        bindinput="onAmountInput"
+      />
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="white-block note-block">
+    <text class="note-label">备注</text>
+    <input
+      class="note-input"
+      placeholder="10字以内"
+      maxlength="10"
+      value="{{note}}"
+      bindinput="onNoteInput"
+    />
+  </view>
+
+  <!-- 保存 -->
+  <view class="save-wrap">
+    <view class="{{saveBtnClass}}" bindtap="onSave">
+      <text>保存</text>
+    </view>
+  </view>
+</view>

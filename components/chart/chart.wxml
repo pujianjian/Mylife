@@ -1,0 +1,24 @@
+<view class="chart-container">
+  <canvas 
+    type="2d" 
+    id="lineChart" 
+    class="chart-canvas"
+    bindtouchstart="onTouch"
+    bindtouchmove="onTouch"
+    bindtouchend="onTouchEnd"
+  ></canvas>
+  <view class="tooltip {{showTooltip ? 'show' : ''}}" style="left: {{tooltipX}}px; top: {{tooltipY}}px;">
+    <view class="tooltip-date">{{tooltipDate}}</view>
+    <block wx:if="{{tooltipValues}}">
+      <view wx:for="{{tooltipValues}}" wx:key="name" class="tooltip-line-row">
+        <view class="tooltip-dot" style="background: {{item.color}};"></view>
+        <text class="tooltip-name">{{item.name}}</text>
+        <text class="tooltip-multi-val">{{item.valueStr}}</text>
+      </view>
+    </block>
+    <view wx:else class="tooltip-value">{{tooltipValue}}</view>
+  </view>
+  <view wx:if="{{isEmpty}}" class="chart-empty">
+    <text class="empty-text">暂无数据</text>
+  </view>
+</view>

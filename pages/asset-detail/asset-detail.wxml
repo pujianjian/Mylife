@@ -1,0 +1,139 @@
+<view class="page">
+  <!-- 黄色头部 -->
+  <view class="detail-header">
+    <view class="header-card">
+      <view class="header-top">
+        <text class="header-name">{{displayName}}</text>
+        <view class="header-badge" wx:if="{{categoryInfo}}">
+          <text class="badge-icon">{{categoryInfo.icon}}</text>
+        </view>
+      </view>
+      <view class="header-amount-row">
+        <text class="header-amount">{{displayAmount}}</text>
+      </view>
+      <text class="header-type">{{typeLabel}}</text>
+      <button class="adjust-btn" bindtap="openAdjustModal">调整{{typeLabel === '欠款' ? '欠款' : '金额'}}</button>
+    </view>
+  </view>
+
+  <!-- 收支明细 -->
+  <view class="tx-section">
+    <view class="tx-header">
+      <text class="tx-title">收支明细</text>
+      <view class="month-picker-wrap" bindtap="onMonthPickerTap" wx:if="{{monthOptions.length > 1}}">
+        <text class="month-text">{{monthOptions[currentMonthIndex] || '全部'}}</text>
+        <text class="month-arrow">▼</text>
+      </view>
+      <text wx:else class="month-text-static">{{monthOptions[0] || '暂无记录'}}</text>
+    </view>
+
+    <!-- 变动列表（只显示当前选中月份） -->
+    <view wx:if="{{txGroups.length > 0}}" class="tx-list">
+      <view
+        class="tx-item"
+        wx:for="{{currentMonthItems}}"
+        wx:key="id"
+        data-txd="{{item.id}}"
+        bindlongpress="onDeleteTx"
+      >
+        <view class="tx-date-row">
+          <text class="tx-date">{{item.displayDate}}</text>
+          <text class="tx-weekday">{{item.weekday}}</text>
+        </view>
+        <view class="tx-content">
+          <view class="tx-icon-box" style="background: {{categoryInfo ? categoryInfo.color : '#FBBF24'}}20;">
+            <text class="tx-icon" style="color: {{categoryInfo ? categoryInfo.color : '#FBBF24'}};">💰</text>
+          </view>
+          <view class="tx-info">
+            <text class="tx-desc">{{item.note || '手动调整'}}</text>
+            <text class="tx-from-to">从 {{item.beforeFmt}} 调整为 {{item.afterFmt}}</text>
+          </view>
+          <text class="tx-change {{item.changeAmount >= 0 ? 'positive' : 'negative'}}">{{item.changeFormatted}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:elif="{{txGroups.length === 0}}" class="empty-state">
+      <text>暂无变动记录</text>
+      <text class="empty-sub">点击上方「调整金额」开始记录</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar">
+    <view class="action-item" bindtap="onTransferTap">
+      <text class="action-icon">↻</text>
+      <text class="action-label">转账</text>
+    </view>
+    <view class="action-divider"></view>
+    <view class="action-item" bindtap="onSettingsTap">
+      <text class="action-icon">⚙</text>
+      <text class="action-label">设置</text>
+    </view>
+    <view class="action-divider"></view>
+    <view class="action-item delete-action" bindtap="onDeleteAssetTap">
+      <text class="action-icon">🗑</text>
+      <text class="action-label">删除资产</text>
+    </view>
+  </view>
+</view>
+
+<!-- 调整金额弹窗 -->
+<view wx:if="{{showAdjustModal}}" class="modal-mask" bindtap="closeAdjustModal">
+  <view class="modal-content adjust-modal" catchtap="preventBubble">
+    <view class="modal-header">
+      <text class="modal-title">调整{{typeLabel === '欠款' ? '欠款' : '金额'}}</text>
+      <text class="modal-close" bindtap="closeAdjustModal">×</text>
+    </view>
+
+    <view class="current-display">
+      <text class="current-label">当前{{typeLabel}}</text>
+      <text class="current-value">¥{{displayAmount}}</text>
+    </view>
+
+    <!-- 模式切换 -->
+    <view class="mode-switch">
+      <view
+        class="mode-btn {{adjustMode === 'increment' ? 'active' : ''}}"
+        data-mode="increment"
+        bindtap="onAdjustModeChange"
+      >增量调整</view>
+      <view
+        class="mode-btn {{adjustMode === 'absolute' ? 'active' : ''}}"
+        data-mode="absolute"
+        bindtap="onAdjustModeChange"
+      >全量调整</view>
+    </view>
+
+    <view class="form-row">
+      <text class="form-label">{{adjustMode === 'absolute' ? '目标金额' : '调整金额'}}</text>
+      <input
+        class="form-input"
+        type="digit"
+        placeholder="{{adjustMode === 'absolute' ? '输入新的金额' : '正数增加，负数减少'}}"
+        value="{{adjustAmount}}"
+        bindinput="onAdjustInput"
+      />
+    </view>
+
+    <!-- 全量模式预览 -->
+    <view wx:if="{{adjustMode === 'absolute' && adjustPreview}}" class="preview-row">
+      <text class="preview-label">将变动</text>
+      <text class="preview-value {{adjustPreviewClass}}">{{adjustPreview}}</text>
+    </view>
+
+    <view class="form-row">
+      <text class="form-label">备注</text>
+      <input
+        class="form-input"
+        placeholder="选填，如：工资入账、消费支出"
+        value="{{adjustNote}}"
+        bindinput="onAdjustNoteInput"
+      />
+    </view>
+
+    <view class="modal-actions">
+      <button class="btn btn-save" bindtap="confirmAdjust">确认调整</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,125 @@
+.page {
+  min-height: 100vh;
+  background: #F3F4F6;
+  padding-bottom: 200rpx;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: #9CA3AF;
+  font-size: 28rpx;
+}
+
+/* ============== 顶部 header ============== */
+.header {
+  background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+  padding: 48rpx 32rpx 56rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  color: #fff;
+}
+
+.header-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56rpx;
+  flex-shrink: 0;
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.header-type {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+.header-amount {
+  font-size: 56rpx;
+  font-weight: 700;
+  letter-spacing: -1rpx;
+}
+
+/* ============== 详情卡片 ============== */
+.card {
+  background: #fff;
+  margin: -24rpx 24rpx 0;
+  border-radius: 20rpx;
+  padding: 8rpx 0;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 26rpx;
+  color: #6B7280;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #1F2937;
+  font-weight: 500;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-all;
+}
+
+.info-value.muted {
+  color: #9CA3AF;
+  font-weight: 400;
+}
+
+/* ============== 操作按钮 ============== */
+.actions {
+  display: flex;
+  gap: 20rpx;
+  padding: 32rpx 24rpx 0;
+}
+
+.action-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.btn-edit {
+  background: #fff;
+  color: #3B82F6;
+  border: 2rpx solid #3B82F6;
+}
+
+.btn-delete {
+  background: #FEF2F2;
+  color: #EF4444;
+  border: 2rpx solid #FECACA;
+}

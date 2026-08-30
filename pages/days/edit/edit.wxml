@@ -1,0 +1,149 @@
+<view class="page">
+  <!-- 名称 -->
+  <view class="white-block name-block">
+    <text class="block-label">名称</text>
+    <input
+      class="name-input"
+      placeholder="如：老婆、结婚纪念日"
+      placeholder-class="placeholder"
+      value="{{name}}"
+      bindinput="onNameInput"
+      maxlength="20"
+    />
+  </view>
+
+  <!-- 分类 -->
+  <view class="white-block cat-block">
+    <text class="block-label">分类</text>
+    <view class="cat-grid">
+      <view
+        wx:for="{{categories}}"
+        wx:key="key"
+        wx:for-item="c"
+        class="{{c.itemClass}}"
+        data-cat="{{c.key}}"
+        bindtap="onCategorySelect"
+        style="{{c.itemStyle}}"
+      >
+        <text class="cat-icon" style="{{c.iconStyle}}">{{c.icon}}</text>
+        <text class="{{c.nameClass}}">{{c.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 日历类型 -->
+  <view class="white-block row-block">
+    <text class="row-label">日历类型</text>
+    <picker mode="selector" range="{{calendars}}" range-key="name" bindchange="onCalendarChange">
+      <view class="picker">
+        <text>{{calendarLabel}}</text>
+        <text class="picker-arrow">⌄</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 频率 -->
+  <view class="white-block row-block">
+    <text class="row-label">重复频率</text>
+    <picker mode="selector" range="{{frequencies}}" range-key="name" bindchange="onFrequencyChange">
+      <view class="picker">
+        <text>{{frequencyLabel}}</text>
+        <text class="picker-arrow">⌄</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 日期 -->
+  <view class="white-block date-block">
+    <text class="block-label">{{dateBlockLabel}}</text>
+
+    <!-- 公历 -->
+    <block wx:if="{{calendar === 'solar'}}">
+      <picker mode="date" value="{{solarDate}}" bindchange="onPickSolarDate">
+        <view class="date-picker">
+          <text class="date-value">{{solarDate}}</text>
+          <text class="date-arrow">⌄</text>
+        </view>
+      </picker>
+    </block>
+
+    <!-- 农历 -->
+    <block wx:else>
+      <view class="lunar-row">
+        <view class="lunar-label">年</view>
+        <picker mode="selector" range="{{lunarYearRange}}" bindchange="onPickLunarYear">
+          <view class="picker">
+            <text>{{lunarYear}}</text>
+            <text class="picker-arrow">⌄</text>
+          </view>
+        </picker>
+      </view>
+      <view class="lunar-row">
+        <view class="lunar-label">月</view>
+        <picker mode="selector" range="{{lunarMonths}}" range-key="label" bindchange="onPickLunarMonth">
+          <view class="picker">
+            <text>{{lunarMonthLabel}}</text>
+            <text class="picker-arrow">⌄</text>
+          </view>
+        </picker>
+        <view class="leap-toggle" bindtap="toggleLeap">
+          <text class="{{leapClass}}">闰月</text>
+        </view>
+      </view>
+      <view class="lunar-row">
+        <view class="lunar-label">日</view>
+        <picker mode="selector" range="{{lunarDays}}" range-key="label" bindchange="onPickLunarDay">
+          <view class="picker">
+            <text>{{lunarDayLabel}}</text>
+            <text class="picker-arrow">⌄</text>
+          </view>
+        </picker>
+      </view>
+    </block>
+  </view>
+
+  <!-- 提前提醒 -->
+  <view class="white-block row-block">
+    <text class="row-label">提前提醒</text>
+    <picker mode="selector" range="{{[1,2,3,5,7,15,30]}}" bindchange="onRemindChange">
+      <view class="picker">
+        <text>{{remindDays}} 天</text>
+        <text class="picker-arrow">⌄</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 备注 -->
+  <view class="white-block note-block">
+    <text class="block-label">备注</text>
+    <input
+      class="note-input"
+      placeholder="可填礼品想法、想说的话等"
+      placeholder-class="placeholder"
+      value="{{note}}"
+      bindinput="onNoteInput"
+      maxlength="50"
+    />
+  </view>
+
+  <!-- 微信提醒 -->
+  <view class="white-block remind-block">
+    <view class="remind-info">
+      <text class="remind-title">微信提醒</text>
+      <text class="remind-desc">订阅消息推送，需用户授权</text>
+    </view>
+    <view class="remind-btn" bindtap="onSubscribeTap">
+      <text>开启提醒</text>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-wrap">
+    <view class="{{saveBtnClass}}" bindtap="onSave">
+      <text>保存</text>
+    </view>
+    <view wx:if="{{showDelete}}" class="delete-btn" bindtap="onDelete">
+      <text>删除</text>
+    </view>
+  </view>
+</view>

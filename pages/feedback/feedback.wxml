@@ -1,0 +1,125 @@
+<view class="container feedback-page">
+  <!-- 统计卡片 -->
+  <view class="stats-row">
+    <view class="stat-card">
+      <text class="stat-num">{{summary.total || 0}}</text>
+      <text class="stat-txt">全部需求</text>
+    </view>
+    <view class="stat-card stat-orange">
+      <text class="stat-num">{{summary.pending || 0}}</text>
+      <text class="stat-txt">待处理</text>
+    </view>
+    <view class="stat-card stat-blue">
+      <text class="stat-num">{{summary.inProgress || 0}}</text>
+      <text class="stat-txt">进行中</text>
+    </view>
+    <view class="stat-card stat-green">
+      <text class="stat-num">{{summary.done || 0}}</text>
+      <text class="stat-txt">已完成</text>
+    </view>
+  </view>
+
+  <!-- 状态筛选 Tab -->
+  <scroll-view class="filter-scroll" scroll-x="true" enable-flex>
+    <view
+      wx:for="{{filterTabs}}"
+      wx:key="key"
+      class="filter-tab {{activeFilter === item.key ? 'active' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onFilterTab"
+    >{{item.name}}</view>
+    <view class="filter-tab-spacer"></view>
+  </scroll-view>
+
+  <!-- 需求列表 -->
+  <view class="list-wrap">
+    <block wx:if="{{list.length > 0}}">
+      <view wx:for="{{list}}" wx:key="id" class="feedback-item">
+        <view class="fb-top">
+          <view class="fb-left">
+            <text class="fb-cat" style="color: {{item.catColor}}; background: {{item.catBgColor}}">{{item.catName}}</text>
+            <text class="fb-pri" style="color: {{item.priColor}}; background: {{item.priBgColor}}">{{item.priName}}</text>
+          </view>
+          <view class="fb-right">
+            <text class="fb-status" style="color: {{item.statusColor}}; background: {{item.statusBgColor}}">{{item.statusName}}</text>
+          </view>
+        </view>
+        <text class="fb-title">{{item.title}}</text>
+        <text wx:if="{{item.description}}" class="fb-desc">{{item.description}}</text>
+        <view class="fb-bottom">
+          <text class="fb-time">{{item.formattedTime}}</text>
+          <view class="fb-actions">
+            <text class="fb-action" data-id="{{item.id}}" bindtap="openEditModal">编辑</text>
+            <text class="fb-action fb-action-danger" data-id="{{item.id}}" bindtap="onDelete">删除</text>
+          </view>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="empty-state">
+        <text class="empty-icon">📋</text>
+        <text class="empty-text">暂无需求记录</text>
+        <text class="empty-hint">点击下方按钮登记新需求</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- 底部新增按钮 -->
+  <view class="add-btn-bar">
+    <button class="add-btn" bindtap="openAddModal">+ 登记需求</button>
+  </view>
+</view>
+
+<!-- 新增/编辑弹窗 -->
+<view class="modal-mask" wx:if="{{showModal}}" catchtap="closeModal">
+  <view class="modal-content" catchtap="noop">
+    <view class="modal-header">
+      <text class="modal-title">{{isEditing ? '编辑需求' : '登记需求'}}</text>
+      <text class="modal-close" bindtap="closeModal">✕</text>
+    </view>
+    <scroll-view class="modal-body" scroll-y="true">
+      <!-- 标题 -->
+      <view class="form-group">
+        <text class="form-label">需求标题 <text class="required">*</text></text>
+        <input class="form-input" placeholder="请输入需求标题" value="{{form.title}}" bindinput="onTitleInput" maxlength="50"/>
+      </view>
+
+      <!-- 分类 -->
+      <view class="form-group">
+        <text class="form-label">分类</text>
+        <picker mode="selector" range="{{categoryNames}}" value="{{categoryIndex}}" bindchange="onCategoryChange">
+          <view class="form-input picker-value">
+            <text class="cat-dot" style="background: {{FEEDBACK_CATEGORIES[categoryIndex].color}}"></text>
+            {{categoryLabel}}
+          </view>
+        </picker>
+      </view>
+
+      <!-- 优先级 -->
+      <view class="form-group">
+        <text class="form-label">优先级</text>
+        <picker mode="selector" range="{{priorityNames}}" value="{{priorityIndex}}" bindchange="onPriorityChange">
+          <view class="form-input picker-value">{{priorityLabel}}</view>
+        </picker>
+      </view>
+
+      <!-- 状态 -->
+      <view class="form-group">
+        <text class="form-label">状态</text>
+        <picker mode="selector" range="{{statusNames}}" value="{{statusIndex}}" bindchange="onStatusChange">
+          <view class="form-input picker-value">{{statusLabel}}</view>
+        </picker>
+      </view>
+
+      <!-- 描述 -->
+      <view class="form-group">
+        <text class="form-label">详细描述</text>
+        <textarea class="form-textarea" placeholder="请描述具体需求或问题" value="{{form.description}}" bindinput="onDescInput" maxlength="500" auto-height="true"/>
+      </view>
+    </scroll-view>
+    <view class="modal-footer">
+      <button class="btn-cancel" bindtap="closeModal">取消</button>
+      <button class="btn-save" bindtap="onSave">{{isEditing ? '保存' : '提交'}}</button>
+    </view>
+  </view>
+</view>

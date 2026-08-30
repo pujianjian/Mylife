@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "trend-chart": "/components/trend-chart/trend-chart"
+  },
+  "navigationBarTitleText": "健康管理",
+  "backgroundColor": "#F5F6FA"
+}

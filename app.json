@@ -1,0 +1,30 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/weight/weight",
+    "pages/savings/savings",
+    "pages/assets/assets",
+    "pages/savings/detail/detail",
+    "pages/asset-detail/asset-detail",
+    "pages/car/car",
+    "pages/car/energy/energy",
+    "pages/car/other/other",
+    "pages/car/detail/detail",
+    "pages/days/days",
+    "pages/days/edit/edit",
+    "pages/family/family",
+    "pages/feedback/feedback",
+    "pages/todo/todo",
+    "pages/mine/mine",
+    "pages/backup/backup"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "健康理财小助手",
+    "navigationBarTextStyle": "black"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

@@ -1,0 +1,58 @@
+<view class="page" wx:if="{{loaded && item}}">
+  <!-- 顶部 header -->
+  <view class="header">
+    <view class="header-icon">
+      <text>{{item.icon}}</text>
+    </view>
+    <view class="header-info">
+      <text class="header-type">{{item.typeName}}</text>
+      <text class="header-amount">¥{{item.amountStr}}</text>
+    </view>
+  </view>
+
+  <!-- 详情卡片 -->
+  <view class="card">
+    <view class="info-row">
+      <text class="info-label">日期</text>
+      <text class="info-value">{{item.dateLabel}}</text>
+    </view>
+    <view class="info-row" wx:if="{{item.type === 'fuel'}}">
+      <text class="info-label">油量</text>
+      <text class="info-value">{{item.fuelLiters || 0}} L</text>
+    </view>
+    <view class="info-row" wx:if="{{item.type === 'fuel'}}">
+      <text class="info-label">油价</text>
+      <text class="info-value">¥{{item.fuelPrice || 0}} /L</text>
+    </view>
+    <view class="info-row" wx:if="{{item.type === 'ev'}}">
+      <text class="info-label">度数</text>
+      <text class="info-value">{{item.evKwh || 0}} kWh</text>
+    </view>
+    <view class="info-row" wx:if="{{item.type === 'ev'}}">
+      <text class="info-label">电价</text>
+      <text class="info-value">¥{{item.evPrice || 0}} /度</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">备注</text>
+      <text class="{{'info-value ' + (item.note ? '' : 'muted')}}">{{item.note || '无'}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">创建时间</text>
+      <text class="info-value muted">{{item.createTime}}</text>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="actions">
+    <view class="action-btn btn-edit" bindtap="onEdit">
+      <text>编辑</text>
+    </view>
+    <view class="action-btn btn-delete" bindtap="onDelete">
+      <text>删除</text>
+    </view>
+  </view>
+</view>
+
+<view class="loading" wx:else>
+  <text>加载中...</text>
+</view>

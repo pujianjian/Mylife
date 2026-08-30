@@ -1,0 +1,323 @@
+<view class="page">
+  <!-- 顶部 Tab 切换 -->
+  <view class="top-tabs">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="top-tab {{currentTab === item.key ? 'active' : ''}}"
+      data-tab="{{item.key}}"
+      bindtap="switchTab"
+    >
+      <text class="tab-text">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- ==================== 有数 Tab ==================== -->
+  <view wx:if="{{currentTab === 'overview'}}" class="tab-content">
+    <!-- 资产总览卡片 -->
+    <view class="overview-card">
+      <view class="overview-main">
+        <view class="overview-main-item">
+          <text class="overview-main-label">总资产</text>
+          <text class="overview-main-value">¥{{summary.total}}</text>
+        </view>
+        <view class="overview-divider"></view>
+        <view class="overview-main-item">
+          <text class="overview-main-label">资产数量</text>
+          <text class="overview-main-value">{{summary.totalCount}}件</text>
+        </view>
+      </view>
+      <view class="overview-status">
+        <view class="overview-status-item">
+          <view class="status-dot active"></view>
+          <text class="overview-status-text">服役中 {{summary.activeCount}}</text>
+        </view>
+        <view class="overview-status-item">
+          <view class="status-dot retired"></view>
+          <text class="overview-status-text">已退役 {{summary.retiredCount}}</text>
+        </view>
+        <view class="overview-status-item">
+          <view class="status-dot sold"></view>
+          <text class="overview-status-text">已卖出 {{summary.soldCount}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 筛选 Tab -->
+    <view class="section-title">资产列表</view>
+    <view class="filter-bar">
+      <view
+        wx:for="{{statusFilters}}"
+        wx:key="key"
+        class="filter-tab {{statusFilter === item.key ? 'active' : ''}}"
+        data-filter="{{item.key}}"
+        bindtap="onStatusFilterChange"
+      >
+        <text>{{item.name}}</text>
+      </view>
+    </view>
+
+    <!-- 资产列表 -->
+    <view class="asset-grid" wx:if="{{filteredAssets.length > 0}}">
+      <view
+        class="asset-card"
+        wx:for="{{filteredAssets}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="openEditAssetModal"
+        bindlongpress="deleteAsset"
+      >
+        <view class="asset-card-top">
+          <view class="asset-icon-wrap">
+            <text class="asset-card-icon">{{item.icon || '📦'}}</text>
+          </view>
+          <view class="asset-status-tag {{item.status}}">
+            <text>{{item.statusLabel}}</text>
+          </view>
+        </view>
+        <text class="asset-card-name">{{item.name}}</text>
+        <text class="asset-card-price">¥{{item.price}}</text>
+        <view class="asset-card-meta">
+          <text>使用 {{item.days}} 天</text>
+          <text class="meta-divider">·</text>
+          <text>日均 ¥{{item.dailyCost}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{filteredAssets.length === 0}}">
+      <text class="empty-icon">📦</text>
+      <text class="empty-text">还没有资产记录</text>
+      <text class="empty-hint">点击右下角 + 添加第一件资产</text>
+    </view>
+
+    <!-- 添加资产按钮 -->
+    <view class="add-btn-wrap">
+      <button class="add-btn add-btn-green" bindtap="openAssetModal">
+        <text>+ 添加资产</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- ==================== 心愿 Tab ==================== -->
+  <view wx:if="{{currentTab === 'wishlist'}}" class="tab-content">
+    <!-- 心愿总值卡片 -->
+    <view class="wish-summary-card">
+      <view class="wish-summary-left">
+        <text class="wish-summary-label">心愿总值</text>
+        <text class="wish-summary-total">¥{{wishlistSummary.total}}</text>
+        <text class="wish-summary-sub">已存 ¥{{wishlistSummary.saved}} · 共 {{wishlistSummary.count}} 个</text>
+      </view>
+      <text class="wish-summary-emoji">🐷</text>
+    </view>
+
+    <!-- 心愿列表 -->
+    <view class="section-title">我的心愿</view>
+    <view class="wish-list" wx:if="{{wishlist.length > 0}}">
+      <view
+        class="wish-card-item"
+        wx:for="{{wishlist}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="openEditWishModal"
+        bindlongpress="deleteWish"
+      >
+        <view class="wish-card-main">
+          <text class="wish-card-icon">{{item.icon || '💝'}}</text>
+          <view class="wish-card-info">
+            <text class="wish-card-name">{{item.name}}</text>
+            <text class="wish-card-target">目标 ¥{{item.targetPrice}}</text>
+          </view>
+          <text class="wish-card-percent">{{item.progress}}%</text>
+        </view>
+        <view class="wish-progress-bar">
+          <view class="wish-progress-fill" style="width: {{item.progress}}%;"></view>
+        </view>
+        <view class="wish-card-amount">
+          <text>已存 ¥{{item.savedAmount}}</text>
+          <text>还差 ¥{{item.remaining}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{wishlist.length === 0}}">
+      <text class="empty-icon">💝</text>
+      <text class="empty-text">还没有心愿</text>
+      <text class="empty-hint">点击右下角 + 添加第一个心愿</text>
+    </view>
+
+    <!-- 添加心愿按钮 -->
+    <view class="add-btn-wrap">
+      <button class="add-btn add-btn-pink" bindtap="openWishModal">
+        <text>+ 添加心愿</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- ==================== 趋势 Tab ==================== -->
+  <view wx:if="{{currentTab === 'trend'}}" class="tab-content">
+    <!-- 时间筛选 -->
+    <view class="trend-ranges">
+      <view
+        wx:for="{{trendRanges}}"
+        wx:key="key"
+        class="trend-range {{trendRange === item.key ? 'active' : ''}}"
+        data-range="{{item.key}}"
+        bindtap="onTrendRangeChange"
+      >
+        <text>{{item.name}}</text>
+      </view>
+    </view>
+
+    <!-- 资产总值卡片 -->
+    <view class="trend-card" wx:if="{{trendChartData.length > 0}}">
+      <view class="trend-card-header">
+        <text class="trend-card-title">资产总值</text>
+      </view>
+      <chart data="{{trendChartData}}" unit="¥"></chart>
+    </view>
+
+    <!-- 资产状态卡片 -->
+    <view class="trend-card" wx:if="{{statusChartData.length > 0}}">
+      <view class="trend-card-header">
+        <text class="trend-card-title">资产状态</text>
+      </view>
+      <view class="status-chart">
+        <view class="status-chart-item" wx:for="{{statusChartData}}" wx:key="name">
+          <view class="status-chart-bar">
+            <view class="status-chart-fill" style="background: {{item.color}}; height: {{item.value > 0 ? '100%' : '0%'}};"></view>
+          </view>
+          <text class="status-chart-label">{{item.name}}</text>
+          <text class="status-chart-value">{{item.value}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 购入总额卡片 -->
+    <view class="trend-card" wx:if="{{purchaseChartData.length > 0}}">
+      <view class="trend-card-header">
+        <text class="trend-card-title">购入总额</text>
+      </view>
+      <chart data="{{purchaseChartData}}" unit="¥"></chart>
+    </view>
+
+    <!-- 日均成本卡片 -->
+    <view class="trend-card" wx:if="{{dailyCostChartData.length > 0}}">
+      <view class="trend-card-header">
+        <text class="trend-card-title">日均成本</text>
+      </view>
+      <chart data="{{dailyCostChartData}}" unit="¥"></chart>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{trendChartData.length === 0}}">
+      <text class="empty-icon">📈</text>
+      <text class="empty-text">还没有趋势数据</text>
+      <text class="empty-hint">添加资产后会自动生成趋势</text>
+    </view>
+  </view>
+</view>
+
+<!-- ========== 添加/编辑资产弹窗 ========== -->
+<view wx:if="{{showAssetModal}}" class="modal-mask" bindtap="closeAssetModal">
+  <view class="modal-content" catchtap="preventBubble">
+    <view class="modal-header">
+      <text class="modal-title">{{isEditing ? '编辑资产' : '添加资产'}}</text>
+      <text class="modal-close" bindtap="closeAssetModal">×</text>
+    </view>
+
+    <scroll-view class="modal-form" scroll-y="true">
+      <view class="form-row">
+        <text class="form-label">名称</text>
+        <input class="form-input" placeholder="输入资产名称" value="{{assetForm.name}}" data-field="name" bindinput="onAssetFieldChange"/>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">分类</text>
+        <picker mode="selector" range="{{categoryNames}}" value="{{assetForm.categoryIndex}}" bindchange="onAssetCategoryChange">
+          <view class="form-input picker-value">{{assetForm.categoryLabel}}</view>
+        </picker>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">状态</text>
+        <picker mode="selector" range="{{statusNames}}" value="{{assetForm.statusIndex}}" bindchange="onAssetStatusChange">
+          <view class="form-input picker-value">{{assetForm.statusLabel}}</view>
+        </picker>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">购买日期</text>
+        <picker mode="date" value="{{assetForm.purchaseDate}}" bindchange="onAssetDateChange">
+          <view class="form-input picker-value">{{assetForm.purchaseDate}}</view>
+        </picker>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">价格</text>
+        <input class="form-input" type="digit" placeholder="¥" value="{{assetForm.price}}" data-field="price" bindinput="onAssetFieldChange"/>
+        <text class="input-unit">¥</text>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">当前价值</text>
+        <input class="form-input" type="digit" placeholder="¥（选填）" value="{{assetForm.currentValue}}" data-field="currentValue" bindinput="onAssetFieldChange"/>
+        <text class="input-unit">¥</text>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">图标</text>
+        <input class="form-input" placeholder="emoji（选填）" value="{{assetForm.icon}}" data-field="icon" bindinput="onAssetFieldChange"/>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">备注</text>
+        <textarea class="form-textarea" placeholder="备注（选填）" value="{{assetForm.note}}" data-field="note" bindinput="onAssetFieldChange"/>
+      </view>
+    </scroll-view>
+
+    <view class="modal-actions">
+      <button class="btn btn-green" bindtap="saveAsset">{{isEditing ? '更新' : '添加'}}</button>
+    </view>
+  </view>
+</view>
+
+<!-- ========== 添加/编辑心愿弹窗 ========== -->
+<view wx:if="{{showWishModal}}" class="modal-mask" bindtap="closeWishModal">
+  <view class="modal-content" catchtap="preventBubble">
+    <view class="modal-header">
+      <text class="modal-title">{{isEditingWish ? '编辑心愿' : '添加心愿'}}</text>
+      <text class="modal-close" bindtap="closeWishModal">×</text>
+    </view>
+
+    <scroll-view class="modal-form" scroll-y="true">
+      <view class="form-row">
+        <text class="form-label">名称</text>
+        <input class="form-input" placeholder="输入心愿名称" value="{{wishForm.name}}" data-field="name" bindinput="onWishFieldChange"/>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">目标价格</text>
+        <input class="form-input" type="digit" placeholder="¥" value="{{wishForm.targetPrice}}" data-field="targetPrice" bindinput="onWishFieldChange"/>
+        <text class="input-unit">¥</text>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">已存金额</text>
+        <input class="form-input" type="digit" placeholder="¥（选填）" value="{{wishForm.savedAmount}}" data-field="savedAmount" bindinput="onWishFieldChange"/>
+        <text class="input-unit">¥</text>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">图标</text>
+        <input class="form-input" placeholder="emoji（选填）" value="{{wishForm.icon}}" data-field="icon" bindinput="onWishFieldChange"/>
+      </view>
+    </scroll-view>
+
+    <view class="modal-actions">
+      <button class="btn btn-pink" bindtap="saveWish">{{isEditingWish ? '更新' : '添加'}}</button>
+    </view>
+  </view>
+</view>

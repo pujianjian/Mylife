@@ -1,0 +1,306 @@
+<view class="container todo-page">
+  <!-- 今日概览 -->
+  <view class="overview-card">
+    <view class="overview-header">
+      <view class="overview-date">
+        <text class="overview-date-text">{{todayDate}}</text>
+        <text class="overview-date-label">今日待办</text>
+      </view>
+      <view class="overview-rate">
+        <text class="rate-num">{{todaySummary.completionRate || 0}}%</text>
+      </view>
+    </view>
+    <view class="overview-progress">
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{todaySummary.completionRate || 0}}%;"></view>
+      </view>
+    </view>
+    <view class="overview-stats">
+      <view class="ov-stat">
+        <text class="ov-stat-num">{{todaySummary.total || 0}}</text>
+        <text class="ov-stat-txt">今日总数</text>
+      </view>
+      <view class="ov-stat">
+        <text class="ov-stat-num ov-stat-done">{{todaySummary.completed || 0}}</text>
+        <text class="ov-stat-txt">已完成</text>
+      </view>
+      <view class="ov-stat">
+        <text class="ov-stat-num ov-stat-pending">{{todaySummary.pending || 0}}</text>
+        <text class="ov-stat-txt">待完成</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日待办列表（跨频率） -->
+  <view class="section" wx:if="{{todayTodos.length > 0}}">
+    <view class="section-title">
+      <text class="section-icon">📌</text>
+      <text>今日待办</text>
+    </view>
+    <view class="today-list">
+      <view wx:for="{{todayTodos}}" wx:key="id" class="todo-item {{item.completed ? 'done' : ''}}">
+        <view class="todo-check {{item.completed ? 'checked' : ''}}" data-id="{{item.id}}" bindtap="onToggle">
+          <text wx:if="{{item.completed}}" class="check-icon">✓</text>
+        </view>
+        <view class="todo-main">
+          <view class="todo-title-row">
+            <text class="todo-title">{{item.title}}</text>
+            <text class="todo-freq-tag" style="color: {{item.freqColor}}; background: {{item.freqBgColor}}">{{item.freqName}}</text>
+          </view>
+          <view class="todo-meta">
+            <text wx:if="{{item.timeText}}" class="todo-time">⏰ {{item.timeText}}</text>
+            <text class="todo-pri" style="color: {{item.priColor}}; background: {{item.priBgColor}}">{{item.priName}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 频率 Tab -->
+  <view class="tab-bar">
+    <view
+      wx:for="{{frequencyTabs}}"
+      wx:key="key"
+      class="tab-item {{activeTab === item.key ? 'active' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onTabChange"
+      style="{{activeTab === item.key ? 'color: ' + item.color + '; border-color: ' + item.color : ''}}"
+    >
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 当前频率列表 -->
+  <view class="freq-list-wrap">
+    <!-- 待办列表 -->
+    <block wx:if="{{activeTab !== 'hobby' && list.length > 0}}">
+      <view wx:for="{{list}}" wx:key="id" class="freq-item">
+        <view class="freq-item-left">
+          <view class="freq-check {{item.completed ? 'checked' : ''}}" data-id="{{item.id}}" bindtap="onToggle">
+            <text wx:if="{{item.completed}}" class="check-icon">✓</text>
+          </view>
+          <view class="freq-dot" style="background: {{item.freqColor}};"></view>
+        </view>
+        <view class="freq-item-main">
+          <view class="freq-title-row">
+            <text class="freq-item-title {{item.completed ? 'text-done' : ''}}">{{item.title}}</text>
+            <text class="freq-item-pri" style="color: {{item.priColor}}; background: {{item.priBgColor}}">{{item.priName}}</text>
+          </view>
+          <view class="freq-item-meta">
+            <text class="freq-schedule">{{item.scheduleText}}</text>
+            <text wx:if="{{item.timeText}}" class="freq-time">⏰ {{item.timeText}}</text>
+          </view>
+          <text wx:if="{{item.description}}" class="freq-item-desc">{{item.description}}</text>
+        </view>
+        <view class="freq-item-actions">
+          <text class="freq-action" data-id="{{item.id}}" bindtap="openEditModal">编辑</text>
+          <text class="freq-action freq-action-danger" data-id="{{item.id}}" bindtap="onDelete">删除</text>
+        </view>
+      </view>
+    </block>
+    <!-- 爱好列表 -->
+    <block wx:elif="{{activeTab === 'hobby'}}">
+      <!-- 爱好统计卡片 -->
+      <view class="hobby-summary-card">
+        <view class="hobby-stat">
+          <text class="hobby-stat-num">{{hobbySummary.total || 0}}</text>
+          <text class="hobby-stat-txt">总爱好</text>
+        </view>
+        <view class="hobby-stat">
+          <text class="hobby-stat-num" style="color:#3B82F6">{{hobbySummary.learning || 0}}</text>
+          <text class="hobby-stat-txt">学习中</text>
+        </view>
+        <view class="hobby-stat">
+          <text class="hobby-stat-num" style="color:#10B981">{{hobbySummary.proficient || 0}}</text>
+          <text class="hobby-stat-txt">熟练</text>
+        </view>
+        <view class="hobby-stat">
+          <text class="hobby-stat-num" style="color:#F59E0B">{{hobbySummary.paused || 0}}</text>
+          <text class="hobby-stat-txt">暂停</text>
+        </view>
+      </view>
+      <!-- 爱好列表 -->
+      <block wx:if="{{hobbyList.length > 0}}">
+        <view wx:for="{{hobbyList}}" wx:key="id" class="hobby-item">
+          <view class="hobby-item-header">
+            <view class="hobby-item-left">
+              <text class="hobby-icon">{{item.categoryIcon}}</text>
+              <text class="hobby-title">{{item.title}}</text>
+            </view>
+            <text class="hobby-status" style="color: {{item.statusColor}}; border-color: {{item.statusColor}}">{{item.statusName}}</text>
+          </view>
+          <!-- 进度条 -->
+          <view class="hobby-progress-wrap">
+            <view class="hobby-progress-bar">
+              <view class="hobby-progress-fill" style="width: {{item.progress || 0}}%; background: {{item.categoryColor}};"></view>
+            </view>
+            <text class="hobby-progress-text">{{item.progress || 0}}%</text>
+          </view>
+          <!-- 目标 -->
+          <view wx:if="{{item.goal}}" class="hobby-goal">
+            <text class="hobby-goal-label">目标：</text>
+            <text class="hobby-goal-text">{{item.goal}}</text>
+          </view>
+          <!-- 描述 -->
+          <view wx:if="{{item.description}}" class="hobby-desc">
+            <text>{{item.description}}</text>
+          </view>
+          <view class="hobby-item-actions">
+            <text class="hobby-action" data-id="{{item.id}}" bindtap="openEditModal">编辑</text>
+            <text class="hobby-action hobby-action-danger" data-id="{{item.id}}" bindtap="onDelete">删除</text>
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="empty-state">
+          <text class="empty-icon">🌟</text>
+          <text class="empty-text">暂无个人爱好</text>
+          <text class="empty-hint">点击下方按钮添加您的兴趣爱好</text>
+        </view>
+      </block>
+    </block>
+    <!-- 空状态 -->
+    <block wx:elif="{{list.length === 0 && activeTab !== 'hobby'}}">
+      <view class="empty-state">
+        <text class="empty-icon">📝</text>
+        <text class="empty-text">暂无{{frequencyTabs[frequencyIndex].name}}待办</text>
+        <text class="empty-hint">点击下方按钮添加待办事项</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- 底部新增按钮 -->
+  <view class="add-btn-bar">
+    <button class="add-btn" bindtap="openAddModal">{{activeTab === 'hobby' ? '+ 添加爱好' : '+ 添加待办'}}</button>
+  </view>
+</view>
+
+<!-- 新增/编辑弹窗 -->
+<view class="modal-mask" wx:if="{{showModal}}" catchtap="closeModal">
+  <view class="modal-content" catchtap="noop">
+    <view class="modal-header">
+      <text class="modal-title" wx:if="{{activeTab === 'hobby'}}">{{isEditing ? '编辑爱好' : '添加爱好'}}</text>
+      <text class="modal-title" wx:else>{{isEditing ? '编辑待办' : '添加待办'}}</text>
+      <text class="modal-close" bindtap="closeModal">✕</text>
+    </view>
+    <scroll-view class="modal-body" scroll-y="true">
+      <!-- 爱好表单 -->
+      <block wx:if="{{activeTab === 'hobby'}}">
+        <!-- 标题 -->
+        <view class="form-group">
+          <text class="form-label">爱好名称 <text class="required">*</text></text>
+          <input class="form-input" placeholder="如：吉他、绘画、烘焙" value="{{hobbyForm.title}}" bindinput="onHobbyTitleInput" maxlength="50"/>
+        </view>
+
+        <!-- 分类 -->
+        <view class="form-group">
+          <text class="form-label">分类</text>
+          <picker mode="selector" range="{{categoryNames}}" value="{{hobbyCategoryIndex}}" bindchange="onHobbyCategoryChange">
+            <view class="form-input picker-value">{{hobbyCategoryLabel}}</view>
+          </picker>
+        </view>
+
+        <!-- 状态 -->
+        <view class="form-group">
+          <text class="form-label">当前状态</text>
+          <picker mode="selector" range="{{hobbyStatusNames}}" value="{{hobbyStatusIndex}}" bindchange="onHobbyStatusChange">
+            <view class="form-input picker-value">{{hobbyStatusLabel}}</view>
+          </picker>
+        </view>
+
+        <!-- 进度 -->
+        <view class="form-group">
+          <text class="form-label">当前进度：{{hobbyForm.progress || 0}}%</text>
+          <slider min="0" max="100" value="{{hobbyForm.progress || 0}}" activeColor="#10B981" block-color="#10B981" block-size="16" bindchange="onHobbyProgressChange"/>
+        </view>
+
+        <!-- 目标 -->
+        <view class="form-group">
+          <text class="form-label">想要达成的目标</text>
+          <textarea class="form-textarea" placeholder="如：能够独立演奏一首完整的曲子" value="{{hobbyForm.goal}}" bindinput="onHobbyGoalInput" maxlength="200" auto-height="true"/>
+        </view>
+
+        <!-- 描述 -->
+        <view class="form-group">
+          <text class="form-label">描述</text>
+          <textarea class="form-textarea" placeholder="添加更多说明（可选）" value="{{hobbyForm.description}}" bindinput="onHobbyDescInput" maxlength="500" auto-height="true"/>
+        </view>
+      </block>
+      <!-- 待办表单 -->
+      <block wx:else>
+        <!-- 标题 -->
+        <view class="form-group">
+          <text class="form-label">待办标题 <text class="required">*</text></text>
+          <input class="form-input" placeholder="如：晨跑30分钟" value="{{form.title}}" bindinput="onTitleInput" maxlength="50"/>
+        </view>
+
+        <!-- 频率 -->
+        <view class="form-group">
+          <text class="form-label">频率</text>
+          <picker mode="selector" range="{{frequencyNames}}" value="{{frequencyIndex}}" bindchange="onFrequencyChange">
+            <view class="form-input picker-value">
+              <text class="freq-color-dot" style="background: {{frequencyColor}};"></text>
+              {{frequencyLabel}}
+            </view>
+          </picker>
+        </view>
+
+        <!-- 每周：星期 -->
+        <view class="form-group" wx:if="{{form.frequency === 'weekly'}}">
+          <text class="form-label">星期</text>
+          <picker mode="selector" range="{{weekdayNames}}" value="{{weekdayIndex}}" bindchange="onWeekdayChange">
+            <view class="form-input picker-value">{{weekdayLabel}}</view>
+          </picker>
+        </view>
+
+        <!-- 每月：日期 -->
+        <view class="form-group" wx:if="{{form.frequency === 'monthly'}}">
+          <text class="form-label">日期</text>
+          <picker mode="selector" range="{{dayOptions}}" value="{{monthDayIndex}}" bindchange="onMonthDayChange">
+            <view class="form-input picker-value">{{monthDayLabel}}</view>
+          </picker>
+        </view>
+
+        <!-- 每年：月份+日期 -->
+        <view class="form-group" wx:if="{{form.frequency === 'yearly'}}">
+          <text class="form-label">日期</text>
+          <view class="yearly-pickers">
+            <picker mode="selector" range="{{monthOptions}}" value="{{yearMonthIndex}}" bindchange="onYearMonthChange" class="yearly-picker">
+              <view class="form-input picker-value">{{yearMonthLabel}}</view>
+            </picker>
+            <picker mode="selector" range="{{dayOptions}}" value="{{yearDayIndex}}" bindchange="onYearDayChange" class="yearly-picker">
+              <view class="form-input picker-value">{{yearDayLabel}}</view>
+            </picker>
+          </view>
+        </view>
+
+        <!-- 时间 -->
+        <view class="form-group">
+          <text class="form-label">执行时间</text>
+          <picker mode="time" value="{{form.time}}" bindchange="onTimeChange">
+            <view class="form-input picker-value">{{form.time || '选择时间（可选）'}}</view>
+          </picker>
+        </view>
+
+        <!-- 优先级 -->
+        <view class="form-group">
+          <text class="form-label">优先级</text>
+          <picker mode="selector" range="{{priorityNames}}" value="{{priorityIndex}}" bindchange="onPriorityChange">
+            <view class="form-input picker-value">{{priorityLabel}}</view>
+          </picker>
+        </view>
+
+        <!-- 备注 -->
+        <view class="form-group">
+          <text class="form-label">备注</text>
+          <textarea class="form-textarea" placeholder="添加备注信息（可选）" value="{{form.description}}" bindinput="onDescInput" maxlength="500" auto-height="true"/>
+        </view>
+      </block>
+    </scroll-view>
+    <view class="modal-footer">
+      <button class="btn-cancel" bindtap="closeModal">取消</button>
+      <button class="btn-save" bindtap="onSave">{{isEditing ? '保存' : '添加'}}</button>
+    </view>
+  </view>
+</view>

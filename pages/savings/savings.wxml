@@ -1,0 +1,211 @@
+<view class="page">
+  <!-- 顶部 Tab 切换 -->
+  <view class="top-tabs">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="label"
+      class="top-tab {{activeTab === index ? 'active' : ''}}"
+      data-index="{{index}}"
+      bindtap="onTabChange"
+    >
+      <text class="tab-emoji">{{item.icon}}</text>
+      <text class="tab-text">{{item.label}}</text>
+    </view>
+  </view>
+
+  <!-- ==================== 资产 Tab ==================== -->
+  <view wx:if="{{activeTab === 0}}" class="tab-content">
+    <!-- 概览卡片 -->
+    <view class="overview-card">
+      <view class="overview-main">
+        <text class="overview-label">净资产</text>
+        <text class="overview-value">¥{{summary.netWorth}}</text>
+      </view>
+      <view class="overview-sub">
+        <view class="overview-sub-item">
+          <text class="sub-label">总资产</text>
+          <text class="sub-value green">¥{{summary.totalAssets}}</text>
+        </view>
+        <view class="overview-sub-item">
+          <text class="sub-label">总负债</text>
+          <text class="sub-value red">¥{{summary.totalLiabilities}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 账户分组列表 -->
+    <view wx:for="{{accountGroups}}" wx:key="key" class="account-group">
+      <view class="group-header">
+        <text class="group-icon">{{item.icon}}</text>
+        <text class="group-name">{{item.name}}</text>
+        <text class="group-total {{item.type === 'liability' ? 'red' : 'green'}}">
+          {{item.type === 'liability' ? '-' : ''}}¥{{item.totalStr}}
+        </text>
+      </view>
+      <view
+        class="account-item"
+        wx:for="{{item.accounts}}"
+        wx:for-item="acc"
+        wx:key="id"
+        data-id="{{acc.id}}"
+        bindtap="onAccountTap"
+        bindlongpress="onAccountLongPress"
+      >
+        <view class="acc-icon" style="background: {{item.color}}20;">
+          <text>{{item.icon}}</text>
+        </view>
+        <view class="acc-info">
+          <text class="acc-name">{{acc.name}}</text>
+          <text wx:if="{{acc.note}}" class="acc-note">{{acc.note}}</text>
+        </view>
+        <text class="acc-amount {{acc.isLiability ? 'red' : 'green'}}">
+          {{acc.isLiability ? '-' : ''}}¥{{acc.amountStr}}
+        </text>
+      </view>
+    </view>
+
+    <view wx:if="{{accountGroups.length === 0}}" class="empty-state">
+      <text class="empty-icon">💰</text>
+      <text>暂无账户，点击右下角 + 添加</text>
+    </view>
+
+    <!-- 添加账户按钮 -->
+    <view class="add-btn-wrap">
+      <button class="add-btn" bindtap="openAddAccountModal">
+        <text>+ 添加账户</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- ==================== 图表 Tab ==================== -->
+  <view wx:if="{{activeTab === 1}}" class="tab-content">
+    <!-- 时间范围切换 -->
+    <view class="range-tabs">
+      <view
+        wx:for="{{chartRanges}}"
+        wx:key="key"
+        class="range-tab {{chartRange === item.key ? 'active' : ''}}"
+        data-range="{{item.key}}"
+        bindtap="onChartRangeChange"
+      >{{item.name}}</view>
+    </view>
+
+    <!-- 最新汇总 -->
+    <view class="chart-summary-card">
+      <view class="chart-summary-item">
+        <text class="chart-summary-label">最新资产</text>
+        <text class="chart-summary-value green">¥{{chartSummary.latestAssets}}</text>
+      </view>
+      <view class="chart-summary-item">
+        <text class="chart-summary-label">最新负债</text>
+        <text class="chart-summary-value red">¥{{chartSummary.latestLiabilities}}</text>
+      </view>
+      <view class="chart-summary-item">
+        <text class="chart-summary-label">最新净资产</text>
+        <text class="chart-summary-value purple">¥{{chartSummary.latestNetWorth}}</text>
+      </view>
+    </view>
+
+    <!-- 资产趋势 -->
+    <view class="chart-card" wx:if="{{assetTrendData.length > 0}}">
+      <view class="chart-card-header">
+        <text class="chart-card-title">资产趋势</text>
+        <view class="chart-legend">
+          <view class="legend-dot" style="background: #34D399;"></view>
+          <text class="legend-text">总资产</text>
+        </view>
+      </view>
+      <chart
+        data="{{assetTrendData}}"
+        lineColor="#34D399"
+        gradientStart="rgba(52,211,153,0.3)"
+        gradientEnd="rgba(52,211,153,0.05)"
+        valueKey="value"
+        unit="¥"
+      ></chart>
+    </view>
+
+    <!-- 负债趋势 -->
+    <view class="chart-card" wx:if="{{liabilityTrendData.length > 0}}">
+      <view class="chart-card-header">
+        <text class="chart-card-title">负债趋势</text>
+        <view class="chart-legend">
+          <view class="legend-dot" style="background: #F87171;"></view>
+          <text class="legend-text">总负债</text>
+        </view>
+      </view>
+      <chart
+        data="{{liabilityTrendData}}"
+        lineColor="#F87171"
+        gradientStart="rgba(248,113,113,0.3)"
+        gradientEnd="rgba(248,113,113,0.05)"
+        valueKey="value"
+        unit="¥"
+      ></chart>
+    </view>
+
+    <!-- 净资产趋势 -->
+    <view class="chart-card" wx:if="{{netWorthTrendData.length > 0}}">
+      <view class="chart-card-header">
+        <text class="chart-card-title">净资产趋势</text>
+        <view class="chart-legend">
+          <view class="legend-dot" style="background: #6366F1;"></view>
+          <text class="legend-text">净资产</text>
+        </view>
+      </view>
+      <chart
+        data="{{netWorthTrendData}}"
+        lineColor="#6366F1"
+        gradientStart="rgba(99,102,241,0.3)"
+        gradientEnd="rgba(99,102,241,0.05)"
+        valueKey="value"
+        unit="¥"
+      ></chart>
+    </view>
+
+    <view wx:if="{{assetTrendData.length === 0}}" class="empty-state">
+      <text class="empty-icon">📈</text>
+      <text>暂无趋势数据</text>
+      <text class="empty-hint">添加或更新账户后会自动生成快照</text>
+    </view>
+  </view>
+
+  <!-- ==================== 账户编辑弹窗 ==================== -->
+  <view wx:if="{{showAccountModal}}" class="modal-mask" bindtap="closeAccountModal">
+    <view class="modal-content" catchtap="noop">
+      <view class="modal-header">
+        <text class="modal-title">{{accountModalTitle}}</text>
+        <text class="modal-close" bindtap="closeAccountModal">×</text>
+      </view>
+
+      <view class="modal-form">
+        <view class="form-row">
+          <text class="form-label">分类</text>
+          <picker mode="selector" range="{{accountCategoryOptions}}" value="{{accountFormCategoryIndex}}" bindchange="onAccountCategoryChange">
+            <view class="form-value">{{accountCategoryOptions[accountFormCategoryIndex] || '请选择'}}</view>
+          </picker>
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">名称</text>
+          <input class="form-input" placeholder="如：支付宝" value="{{accountForm.name}}" bindinput="onAccountNameInput" />
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">余额</text>
+          <input class="form-input" type="digit" placeholder="0.00" value="{{accountForm.amount}}" bindinput="onAccountAmountInput" />
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">备注</text>
+          <input class="form-input" placeholder="选填" value="{{accountForm.note}}" bindinput="onAccountNoteInput" />
+        </view>
+      </view>
+
+      <view class="modal-actions">
+        <button wx:if="{{editAccountId}}" class="btn-delete" bindtap="deleteAccount">删除</button>
+        <button class="btn-save" bindtap="saveAccount">保存</button>
+      </view>
+    </view>
+  </view>
+</view>

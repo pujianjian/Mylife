@@ -1,0 +1,13 @@
+<view class="tabbar">
+  <view
+    class="tabbar-item {{active === index ? 'active' : ''}}"
+    wx:for="{{tabs}}"
+    wx:key="key"
+    data-index="{{index}}"
+    data-path="{{item.path}}"
+    bindtap="onTabTap"
+  >
+    <text class="tabbar-icon">{{item.icon}}</text>
+    <text class="tabbar-text">{{item.text}}</text>
+  </view>
+</view>

@@ -1,0 +1,204 @@
+.page {
+  min-height: 100vh;
+  background: #F3F4F6;
+  padding-bottom: 200rpx;
+}
+
+/* ============== 顶部蓝色 header ============== */
+.header {
+  background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+  padding: 24rpx 32rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.header-title {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.header-date {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  font-size: 26rpx;
+  opacity: 0.95;
+}
+
+.header-arrow {
+  font-size: 24rpx;
+  margin-top: 2rpx;
+}
+
+/* ============== 白色卡片 ============== */
+.white-block {
+  background: #fff;
+  margin: 0 24rpx 24rpx;
+  border-radius: 20rpx;
+  padding: 28rpx 32rpx;
+}
+
+/* ============== 支出费用 ============== */
+.amount-block {
+  padding: 24rpx 32rpx 28rpx;
+}
+
+.amount-label {
+  font-size: 26rpx;
+  color: #6B7280;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.amount-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6rpx;
+}
+
+.amount-symbol {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #3B82F6;
+}
+
+.amount-value {
+  font-size: 56rpx;
+  font-weight: 700;
+  color: #3B82F6;
+  letter-spacing: -1rpx;
+}
+
+/* ============== 类型九宫格 ============== */
+.type-title {
+  font-size: 28rpx;
+  color: #1F2937;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 24rpx;
+}
+
+.type-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.type-item {
+  width: calc((100% - 32rpx) / 3);
+  background: #F9FAFB;
+  border-radius: 16rpx;
+  padding: 24rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.type-item.active {
+  background: #EFF6FF;
+}
+
+.type-icon {
+  font-size: 40rpx;
+  line-height: 1;
+}
+
+.type-name {
+  font-size: 22rpx;
+  color: #6B7280;
+}
+
+.type-name.active {
+  color: #3B82F6;
+  font-weight: 600;
+}
+
+/* ============== 金额输入 ============== */
+.input-label {
+  font-size: 26rpx;
+  color: #6B7280;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+  padding-bottom: 8rpx;
+}
+
+.input-symbol {
+  font-size: 36rpx;
+  color: #3B82F6;
+  font-weight: 600;
+}
+
+.input-field {
+  flex: 1;
+  font-size: 40rpx;
+  color: #1F2937;
+  font-weight: 600;
+  height: 64rpx;
+  line-height: 64rpx;
+}
+
+.input-placeholder {
+  color: #D1D5DB;
+  font-size: 28rpx;
+  font-weight: 400;
+}
+
+/* ============== 备注 ============== */
+.note-label {
+  font-size: 28rpx;
+  color: #1F2937;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.note-input {
+  font-size: 28rpx;
+  color: #1F2937;
+  height: 44rpx;
+}
+
+/* ============== 保存按钮 ============== */
+.save-wrap {
+  position: fixed;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: 48rpx;
+}
+
+.save-btn {
+  height: 96rpx;
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #fff;
+  background: #BFDBFE;
+  letter-spacing: 2rpx;
+  transition: all 0.2s;
+}
+
+.save-btn.active {
+  background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+  box-shadow: 0 8rpx 20rpx rgba(59, 130, 246, 0.3);
+}

@@ -1,0 +1,605 @@
+.health-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #E8FDF4 0%, #F5F6FA 30%);
+  padding: 0 24rpx 40rpx;
+  box-sizing: border-box;
+}
+
+/* ========== 页面头部 + 主分组 Tab ========== */
+.page-header {
+  padding: 24rpx 0 16rpx;
+  text-align: center;
+}
+
+.header-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1F2937;
+}
+
+.main-tabs {
+  display: flex;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 6rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.main-tab {
+  flex: 1;
+  text-align: center;
+  padding: 18rpx 0;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #9CA3AF;
+  border-radius: 12rpx;
+  transition: all 0.2s;
+}
+
+.main-tab.active {
+  background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ========== 健康卡片通用 ========== */
+.health-card, .fit-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1F2937;
+}
+
+.card-more {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  color: #9CA3AF;
+}
+
+.more-arrow {
+  font-size: 32rpx;
+  margin-left: 4rpx;
+}
+
+/* ========== 趋势图 ========== */
+.trend-chart-wrap {
+  margin: 0 -8rpx 20rpx;
+}
+
+.trend-summary {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #F3F4F6;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.summary-label {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.summary-value {
+  font-size: 28rpx;
+  color: #1F2937;
+  font-weight: 600;
+}
+
+.summary-num {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #10B981;
+}
+
+.summary-unit {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  font-weight: 400;
+  margin-left: 4rpx;
+}
+
+.summary-value.up { color: #EF4444; }
+.summary-value.down { color: #10B981; }
+
+/* ========== 预测卡片 ========== */
+.predict-card { padding: 24rpx 28rpx; }
+.predict-header { display: flex; align-items: center; }
+.predict-icon { font-size: 36rpx; margin-right: 12rpx; }
+.predict-title { flex: 1; font-size: 30rpx; font-weight: 600; color: #1F2937; }
+.predict-arrow { font-size: 32rpx; color: #9CA3AF; }
+
+/* ========== 指标卡片 ========== */
+.metrics-card { padding: 0; overflow: hidden; }
+
+.metrics-tabs {
+  display: flex;
+  border-bottom: 1rpx solid #F3F4F6;
+  margin: 0 28rpx;
+}
+
+.metrics-tab {
+  flex: 1;
+  text-align: center;
+  padding: 28rpx 0;
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #9CA3AF;
+  position: relative;
+}
+
+.metrics-tab.active { color: #10B981; font-weight: 700; }
+
+.metrics-tab.active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 6rpx;
+  background: #10B981;
+  border-radius: 3rpx;
+}
+
+.metrics-header {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 28rpx 12rpx;
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+.metrics-header-label { width: 120rpx; }
+
+.range-header {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 12rpx;
+}
+
+.range-label { font-size: 20rpx; color: #9CA3AF; }
+.metrics-header-value { width: 110rpx; text-align: right; }
+
+.metrics-list { padding: 0 28rpx 20rpx; }
+
+.metric-row {
+  display: flex;
+  align-items: center;
+  padding: 22rpx 0;
+  border-bottom: 1rpx solid #F9FAFB;
+}
+.metric-row:last-child { border-bottom: none; }
+
+.metric-name { width: 120rpx; font-size: 26rpx; color: #1F2937; font-weight: 500; }
+
+.metric-range-bar {
+  flex: 1;
+  padding: 0 12rpx;
+  position: relative;
+  height: 32rpx;
+  display: flex;
+  align-items: center;
+}
+
+.range-bg {
+  display: flex;
+  width: 100%;
+  height: 16rpx;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+.range-segment { flex: 1; height: 100%; }
+.range-segment.low { background: #D1FAE5; }
+.range-segment.normal { background: #6EE7B7; }
+.range-segment.high { background: #FECACA; }
+
+.range-indicator {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 28rpx; height: 28rpx;
+  border-radius: 50%;
+  border: 4rpx solid #fff;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.15);
+  background: #10B981;
+}
+.range-indicator.high { background: #EF4444; }
+
+.metric-value {
+  width: 110rpx;
+  text-align: right;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+/* 数据对比 */
+.compare-card { padding: 24rpx 28rpx; }
+.compare-header { display: flex; justify-content: space-between; align-items: center; }
+.compare-title { font-size: 30rpx; font-weight: 600; color: #1F2937; }
+.compare-arrow { font-size: 32rpx; color: #9CA3AF; }
+
+/* 历史记录 */
+.history-card .card-header { margin-bottom: 16rpx; }
+.record-list { padding: 0 4rpx; }
+
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22rpx 0;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+.record-item:last-child { border-bottom: none; }
+
+.record-main { display: flex; flex-direction: column; }
+.record-date { font-size: 28rpx; color: #1F2937; margin-bottom: 4rpx; }
+.record-note { font-size: 22rpx; color: #9CA3AF; max-width: 320rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.record-right { display: flex; align-items: center; }
+.record-weight { font-size: 30rpx; font-weight: 600; color: #10B981; margin-right: 20rpx; }
+.record-delete { font-size: 24rpx; color: #FA5151; padding: 8rpx 12rpx; }
+
+/* 蓝牙横幅 */
+.ble-banner {
+  position: fixed;
+  left: 24rpx; right: 24rpx;
+  bottom: 120rpx;
+  background: #E0E7FF;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+  z-index: 50;
+}
+.ble-left { display: flex; align-items: center; }
+.ble-icon { font-size: 32rpx; margin-right: 12rpx; }
+.ble-text { font-size: 26rpx; color: #4338CA; font-weight: 500; }
+.ble-right { display: flex; align-items: center; }
+.ble-close-text { font-size: 24rpx; color: #6B7280; margin-right: 8rpx; }
+.ble-close-icon { font-size: 28rpx; color: #9CA3AF; }
+
+/* ==================== 健身模块样式 ==================== */
+
+/* 周目标卡片 */
+.goal-card { background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%); color: #fff; }
+.goal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20rpx; }
+.goal-info { display: flex; flex-direction: column; gap: 4rpx; }
+.goal-label { font-size: 26rpx; opacity: 0.85; }
+.goal-target { font-size: 34rpx; font-weight: 700; }
+.goal-edit-btn {
+  background: rgba(255,255,255,0.25);
+  padding: 10rpx 24rpx;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+  color: #fff;
+}
+
+.progress-bar-wrap { margin-bottom: 20rpx; }
+.progress-track {
+  height: 14rpx;
+  background: rgba(255,255,255,0.3);
+  border-radius: 7rpx;
+  overflow: hidden;
+  margin-bottom: 8rpx;
+}
+.progress-fill {
+  height: 100%;
+  background: #fff;
+  border-radius: 7rpx;
+  transition: width 0.3s;
+}
+.progress-text { font-size: 24rpx; opacity: 0.85; }
+
+.goal-stats {
+  display: flex;
+  gap: 48rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid rgba(255,255,255,0.2);
+}
+.goal-stat { display: flex; flex-direction: column; align-items: center; }
+.stat-num { font-size: 44rpx; font-weight: 700; line-height: 1.2; }
+.stat-num.done { opacity: 0.5; }
+.stat-num.active { color: #6EE7B7; }
+.stat-label { font-size: 22rpx; opacity: 0.75; margin-top: 4rpx; }
+
+/* 运动类型快捷按钮 */
+.fit-type-section {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+.fit-type-btn {
+  flex: 1;
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 28rpx 12rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.04);
+  border: 2rpx solid transparent;
+}
+.fit-type-btn:active { border-color: #8B5CF6; transform: scale(0.97); }
+.fit-type-icon { font-size: 48rpx; }
+.fit-type-name { font-size: 26rpx; color: #374151; font-weight: 500; }
+
+/* 日历卡片 */
+.calendar-card { padding: 24rpx; }
+
+.cal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding: 0 8rpx;
+}
+.cal-nav {
+  font-size: 32rpx;
+  color: #8B5CF6;
+  padding: 0 16rpx;
+  font-weight: 700;
+}
+.cal-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1F2937;
+}
+
+.cal-weekdays {
+  display: flex;
+  margin-bottom: 8rpx;
+}
+.cal-wd {
+  flex: 1;
+  text-align: center;
+  font-size: 22rpx;
+  color: #9CA3AF;
+  padding: 10rpx 0;
+}
+
+.cal-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+.cal-day {
+  width: calc(100% / 7);
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 12rpx;
+  margin: 2rpx 0;
+}
+.cal-day.current .cal-day-num { color: #1F2937; font-weight: 600; }
+.cal-day.other .cal-day-num { color: #D1D5DB; }
+.cal-day.has-ex { background: #EDE9FE; }
+.cal-day.has-ex.current .cal-day-num { color: #7C3AED; font-weight: 700; }
+.cal-day-num { font-size: 26rpx; line-height: 1; }
+.cal-day-dot {
+  width: 10rpx;
+  height: 10rpx;
+  background: #7C3AED;
+  border-radius: 50%;
+  margin-top: 4rpx;
+}
+
+/* 运动记录列表 */
+.ex-list { padding: 0 4rpx; }
+
+.ex-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+.ex-item:last-child { border-bottom: none; }
+
+.ex-left { display: flex; align-items: center; gap: 16rpx; }
+.ex-icon-wrap {
+  width: 72rpx; height: 72rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+}
+.ex-info { display: flex; flex-direction: column; gap: 4rpx; }
+.ex-name { font-size: 28rpx; font-weight: 600; color: #1F2937; }
+.ex-date { font-size: 22rpx; color: #9CA3AF; }
+
+.ex-right {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.ex-duration { font-size: 28rpx; font-weight: 600; color: #7C3AED; }
+.ex-detail { font-size: 22rpx; color: #6B7280; }
+.ex-delete { font-size: 32rpx; color: #D1D5DB; padding: 4rpx 8rpx; }
+
+/* 空状态 */
+.fit-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 0 40rpx;
+}
+.empty-emoji { font-size: 80rpx; margin-bottom: 16rpx; }
+.empty-text { font-size: 28rpx; color: #9CA3AF; }
+
+/* 底部占位 */
+.bottom-spacer { height: 220rpx; }
+
+/* 悬浮按钮 */
+.record-float-btn {
+  position: fixed;
+  left: 50%;
+  bottom: 40rpx;
+  transform: translateX(-50%);
+  padding: 22rpx 72rpx;
+  border-radius: 46rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.15);
+  z-index: 100;
+}
+.health-float-btn { background: linear-gradient(135deg, #34D399 0%, #10B981 100%); }
+.fitness-float-btn { background: linear-gradient(135deg, #A78BFA 0%, #7C3AED 100%); }
+
+.record-float-text { font-size: 30rpx; font-weight: 700; color: #fff; }
+
+/* 弹窗 */
+.modal-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 100%;
+  height: 82vh;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx 32rpx 24rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+  flex-shrink: 0;
+}
+.modal-title { font-size: 34rpx; font-weight: 700; color: #1F2937; }
+.modal-close { font-size: 48rpx; color: #9CA3AF; line-height: 1; }
+
+.modal-form {
+  flex: 1; height: 0;
+  padding: 24rpx 32rpx;
+  box-sizing: border-box;
+}
+
+.form-section {
+  margin-top: 28rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx dashed #E5E7EB;
+}
+.form-section-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 20rpx;
+}
+.form-section-title.green { color: #10B981; }
+
+.form-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 22rpx;
+}
+.form-label {
+  width: 160rpx;
+  font-size: 28rpx;
+  color: #6B7280;
+  flex-shrink: 0;
+}
+
+.form-input {
+  flex: 1;
+  height: 76rpx;
+  background: #F3F4F6;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #1F2937;
+  box-sizing: border-box;
+}
+.picker-value { display: flex; align-items: center; line-height: 76rpx; }
+
+.input-unit { margin-left: 12rpx; color: #9CA3AF; font-size: 26rpx; flex-shrink: 0; width: 56rpx; }
+
+.form-textarea {
+  flex: 1;
+  height: 120rpx;
+  background: #F3F4F6;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  font-size: 28rpx;
+  color: #1F2937;
+  box-sizing: border-box;
+}
+
+.modal-actions {
+  padding: 20rpx 32rpx 40rpx;
+  border-top: 1rpx solid #F3F4F6;
+  flex-shrink: 0;
+}
+
+.btn {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 44rpx;
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+.btn::after { border: none; }
+
+.btn-green { background: linear-gradient(135deg, #34D399 0%, #10B981 100%); }
+.btn-purple { background: linear-gradient(135deg, #A78BFA 0%, #7C3AED 100%); }
+
+/* 运动类型选择 chip */
+.ex-type-picker { flex: 1; display: flex; gap: 12rpx; }
+.ex-type-chip {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 8rpx;
+  border-radius: 12rpx;
+  border: 2rpx solid #E5E7EB;
+  background: #FAFAFA;
+}
+.ex-type-chip.selected {
+  border-color: #7C3AED;
+  background: #EDE9FE;
+}
+.chip-icon { font-size: 32rpx; margin-bottom: 4rpx; }
+.chip-name { font-size: 22rpx; color: #374151; }
+.ex-type-chip.selected .chip-name { color: #7C3AED; font-weight: 600; }

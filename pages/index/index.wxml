@@ -1,0 +1,39 @@
+<view class="container home-page">
+  <view class="header">
+    <text class="welcome">你好呀 👋</text>
+    <text class="subtitle">记录健康，管理财富</text>
+  </view>
+
+  <view class="modules-grid">
+    <view 
+      class="module-card" 
+      wx:for="{{modules}}" 
+      wx:key="key"
+      data-path="{{item.path}}"
+      bindtap="navigateTo"
+      style="--module-color: {{item.color}}; --module-light: {{item.lightColor}}"
+    >
+      <view class="module-icon" style="background: {{item.lightColor}}; color: {{item.color}}">
+        <text>{{item.icon}}</text>
+      </view>
+      <view class="module-info">
+        <text class="module-title">{{item.title}}</text>
+        <text class="module-desc">{{item.desc}}</text>
+      </view>
+      <view class="module-arrow" style="color: {{item.color}}">
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="tips-card card">
+    <text class="tips-title">💡 使用小贴士</text>
+    <text class="tips-item">• 储存记账管理账户余额和净资产走势图</text>
+    <text class="tips-item">• 汽车记账追踪加油、停车、维修等用车支出</text>
+    <text class="tips-item">• 实物资产记录大件物品，查看使用成本和价值趋势</text>
+    <text class="tips-item">• 重要日子支持公历/农历、每年/每月提醒</text>
+    <text class="tips-item">• 数据保存在本地，可在「我的」中备份</text>
+  </view>
+
+  <tabbar active="{{0}}"></tabbar>
+</view>

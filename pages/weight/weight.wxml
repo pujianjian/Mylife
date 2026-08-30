@@ -1,0 +1,438 @@
+<view class="health-page">
+  <!-- 顶部标题 + 分组 Tab -->
+  <view class="page-header">
+    <text class="header-title">健康管理</text>
+  </view>
+
+  <view class="main-tabs">
+    <view
+      class="main-tab {{mainTab === 'health' ? 'active' : ''}}"
+      data-tab="health"
+      bindtap="switchMainTab"
+    >
+      <text>健康数据</text>
+    </view>
+    <view
+      class="main-tab {{mainTab === 'fitness' ? 'active' : ''}}"
+      data-tab="fitness"
+      bindtap="switchMainTab"
+    >
+      <text>健身</text>
+    </view>
+  </view>
+
+  <!-- ==================== 健康数据 Tab ==================== -->
+  <block wx:if="{{mainTab === 'health'}}">
+    <!-- 体重趋势卡片 -->
+    <view class="health-card trend-card">
+      <view class="card-header">
+        <text class="card-title">体重趋势</text>
+        <view class="card-more" bindtap="onTrendMore">
+          <text>更多</text>
+          <text class="more-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="trend-chart-wrap">
+        <trend-chart data="{{trendData}}" unit="kg"></trend-chart>
+      </view>
+
+      <view class="trend-summary">
+        <view class="summary-item">
+          <text class="summary-label">最新体重</text>
+          <text class="summary-value">
+            <text class="summary-num">{{latestWeight}}</text>
+            <text class="summary-unit" wx:if="{{latestWeight !== '--'}}">kg</text>
+          </text>
+        </view>
+        <view class="summary-item">
+          <text class="summary-label">较上次</text>
+          <text class="summary-value {{weightChange > 0 ? 'up' : weightChange < 0 ? 'down' : ''}}">
+            {{weightChange > 0 ? '+' : ''}}{{weightChange === 0 ? '-' : weightChange}} kg
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 预测体重变化情况 -->
+    <view class="health-card predict-card">
+      <view class="predict-header">
+        <text class="predict-icon">🌤</text>
+        <text class="predict-title">预测体重变化情况</text>
+        <text class="predict-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 身体成分指标 -->
+    <view class="health-card metrics-card">
+      <view class="metrics-tabs">
+        <view
+          class="metrics-tab {{activeMetricTab === 'fat' ? 'active' : ''}}"
+          data-tab="fat"
+          bindtap="onMetricTabChange"
+        >体脂数据</view>
+        <view
+          class="metrics-tab {{activeMetricTab === 'muscle' ? 'active' : ''}}"
+          data-tab="muscle"
+          bindtap="onMetricTabChange"
+        >肌肉数据</view>
+      </view>
+
+      <view class="metrics-header">
+        <text class="metrics-header-label">指标</text>
+        <view class="range-header">
+          <text class="range-label low">偏低</text>
+          <text class="range-label normal">标准</text>
+          <text class="range-label high">偏高</text>
+        </view>
+        <text class="metrics-header-value">指标值</text>
+      </view>
+
+      <view wx:if="{{activeMetricTab === 'fat'}}" class="metrics-list">
+        <view class="metric-row" wx:for="{{fatMetrics}}" wx:key="key">
+          <text class="metric-name">{{item.label}}</text>
+          <view class="metric-range-bar">
+            <view class="range-bg">
+              <view class="range-segment low"></view>
+              <view class="range-segment normal"></view>
+              <view class="range-segment high"></view>
+            </view>
+            <view
+              wx:if="{{item.value}}"
+              class="range-indicator {{item.level}}"
+              style="left: {{(item.key === 'visceralFat' ? 50 : 20)}}%;"
+            ></view>
+          </view>
+          <text class="metric-value">
+            {{item.value ? item.value : '--'}}{{item.value ? item.unit : ''}}
+          </text>
+        </view>
+      </view>
+
+      <view wx:else class="metrics-list">
+        <view class="metric-row" wx:for="{{muscleMetrics}}" wx:key="key">
+          <text class="metric-name">{{item.label}}</text>
+          <view class="metric-range-bar">
+            <view class="range-bg">
+              <view class="range-segment low"></view>
+              <view class="range-segment normal"></view>
+              <view class="range-segment high"></view>
+            </view>
+            <view
+              wx:if="{{item.value}}"
+              class="range-indicator {{item.level}}"
+              style="left: 50%;"
+            ></view>
+          </view>
+          <text class="metric-value">
+            {{item.value ? item.value : '--'}}{{item.value ? item.unit : ''}}
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 数据对比入口 -->
+    <view class="health-card compare-card">
+      <view class="compare-header">
+        <text class="compare-title">数据对比</text>
+        <text class="compare-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 历史记录 -->
+    <view class="health-card history-card" wx:if="{{records.length > 0}}">
+      <view class="card-header">
+        <text class="card-title">历史记录</text>
+      </view>
+      <view class="record-list">
+        <view class="record-item" wx:for="{{records}}" wx:key="id">
+          <view class="record-main">
+            <text class="record-date">{{item.date}}</text>
+            <text wx:if="{{item.note}}" class="record-note">{{item.note}}</text>
+          </view>
+          <view class="record-right">
+            <text class="record-weight">{{item.weight}} kg</text>
+            <text class="record-delete" data-id="{{item.id}}" bindtap="deleteRecord">删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 蓝牙提示横幅 -->
+    <view wx:if="{{showBleBanner}}" class="ble-banner" bindtap="scanBleScale">
+      <view class="ble-left">
+        <text class="ble-icon">☁</text>
+        <text class="ble-text">站在秤上即可自动测量</text>
+      </view>
+      <view class="ble-right" catchtap="closeBleBanner">
+        <text class="ble-close-text">关闭提示</text>
+        <text class="ble-close-icon">×</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- ==================== 健身 Tab ==================== -->
+  <block wx:if="{{mainTab === 'fitness'}}">
+    <!-- 本周运动目标卡片 -->
+    <view class="fit-card goal-card">
+      <view class="goal-top">
+        <view class="goal-info">
+          <text class="goal-label">本周目标</text>
+          <text class="goal-target">每周运动 {{weekGoal}} 天</text>
+        </view>
+        <picker mode="selector" range="{{goalOptions}}" value="{{weekGoal - 1}}" bindchange="onGoalChange">
+          <view class="goal-edit-btn">
+            <text>设置目标</text>
+          </view>
+        </picker>
+      </view>
+      <view class="progress-bar-wrap">
+        <view class="progress-track">
+          <view class="progress-fill" style="width: {{weekProgress.percent}}%;"></view>
+        </view>
+        <text class="progress-text">{{weekProgress.completed}}/{{weekGoal}} 天完成</text>
+      </view>
+      <view class="goal-stats">
+        <view class="goal-stat">
+          <text class="stat-num {{weekProgress.remaining > 0 ? '' : 'done'}}">{{weekProgress.remaining}}</text>
+          <text class="stat-label">剩余天数</text>
+        </view>
+        <view class="goal-stat">
+          <text class="stat-num active">{{weekProgress.completed}}</text>
+          <text class="stat-label">已完成</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 运动类型快捷按钮 -->
+    <view class="fit-type-section">
+      <view
+        class="fit-type-btn"
+        wx:for="{{exerciseTypes}}"
+        wx:key="key"
+        data-type="{{item.key}}"
+        bindtap="onQuickExercise"
+      >
+        <text class="fit-type-icon">{{item.icon}}</text>
+        <text class="fit-type-name">{{item.name}}</text>
+      </view>
+    </view>
+
+    <!-- 运动日历 -->
+    <view class="fit-card calendar-card">
+      <view class="cal-header">
+        <text class="cal-nav" bindtap="onCalPrevMonth">&lt;</text>
+        <text class="cal-title">{{calYear}}年{{calMonth}}月</text>
+        <text class="cal-nav" bindtap="onCalNextMonth">&gt;</text>
+      </view>
+      <view class="cal-weekdays">
+        <text wx:for="{{calWeekdays}}" wx:key="*this" class="cal-wd">{{item}}</text>
+      </view>
+      <view class="cal-grid">
+        <view
+          wx:for="{{calDays}}"
+          wx:key="day"
+          class="cal-day {{item.isCurrentMonth ? 'current' : 'other'}} {{item.hasExercise ? 'has-ex' : ''}}"
+        >
+          <text class="cal-day-num">{{item.day}}</text>
+          <view wx:if="{{item.hasExercise && item.isCurrentMonth}}" class="cal-day-dot"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 近期运动记录 -->
+    <view class="fit-card ex-record-card" wx:if="{{exercises.length > 0}}">
+      <view class="card-header">
+        <text class="card-title">近期运动</text>
+      </view>
+      <view class="ex-list">
+        <view class="ex-item" wx:for="{{exercises}}" wx:key="id">
+          <view class="ex-left">
+            <view class="ex-icon-wrap" style="background: {{item._typeColorBg}};">
+              <text>{{item._typeIcon}}</text>
+            </view>
+            <view class="ex-info">
+              <text class="ex-name">{{item._typeName}}</text>
+              <text class="ex-date">{{item.date}}</text>
+            </view>
+          </view>
+          <view class="ex-right">
+            <text class="ex-duration">{{item.duration}}分钟</text>
+            <text wx:if="{{item.distance}}" class="ex-detail">{{item.distance}}km</text>
+            <text wx:if="{{item.calories}}" class="ex-detail">{{item.calories}}kcal</text>
+            <text class="ex-delete" data-id="{{item.id}}" bindtap="deleteExercise">×</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="fit-empty" wx:if="{{exercises.length === 0}}">
+      <text class="empty-emoji">🏃‍♂️</text>
+      <text class="empty-text">还没有运动记录，点击上方开始记录吧！</text>
+    </view>
+  </block>
+
+  <!-- 底部占位 -->
+  <view class="bottom-spacer"></view>
+</view>
+
+<!-- 悬浮按钮：根据 Tab 变化 -->
+<view
+  class="record-float-btn health-float-btn"
+  wx:if="{{mainTab === 'health'}}"
+  bindtap="openHealthModal"
+>
+  <text class="record-float-text">记录体重</text>
+</view>
+<view
+  class="record-float-btn fitness-float-btn"
+  wx:else
+  bindtap="openExerciseModal"
+>
+  <text class="record-float-text">记录运动</text>
+</view>
+
+<!-- ========== 体重记录弹窗 ========== -->
+<view wx:if="{{showHealthModal}}" class="modal-mask" bindtap="closeHealthModal">
+  <view class="modal-content" catchtap="preventBubble">
+    <view class="modal-header">
+      <text class="modal-title">记录体重</text>
+      <text class="modal-close" bindtap="closeHealthModal">×</text>
+    </view>
+
+    <scroll-view class="modal-form" scroll-y="true">
+      <view class="form-row">
+        <text class="form-label">日期</text>
+        <picker mode="date" value="{{healthDate}}" bindchange="onHealthDateChange">
+          <view class="form-input picker-value">{{healthDate}}</view>
+        </picker>
+      </view>
+      <view class="form-row">
+        <text class="form-label">身高</text>
+        <input class="form-input" type="digit" placeholder="cm（必填）" value="{{healthHeight}}" bindinput="onHealthHeightInput"/>
+        <text class="input-unit">cm</text>
+      </view>
+      <view class="form-row">
+        <text class="form-label">体重</text>
+        <input class="form-input" type="digit" placeholder="kg（必填）" value="{{healthWeight}}" bindinput="onHealthWeightInput"/>
+        <text class="input-unit">kg</text>
+      </view>
+
+      <view class="form-section">
+        <text class="form-section-title green">体脂数据</text>
+        <view class="form-row">
+          <text class="form-label">体脂率</text>
+          <input class="form-input" type="digit" placeholder="%" value="{{bodyFatRate}}" data-field="bodyFatRate" bindinput="onNumberInput"/>
+          <text class="input-unit">%</text>
+        </view>
+        <view class="form-row">
+          <text class="form-label">皮下脂肪率</text>
+          <input class="form-input" type="digit" placeholder="%" value="{{subcutaneousFat}}" data-field="subcutaneousFat" bindinput="onNumberInput"/>
+          <text class="input-unit">%</text>
+        </view>
+        <view class="form-row">
+          <text class="form-label">内脏脂肪等级</text>
+          <input class="form-input" type="number" placeholder="级" value="{{visceralFat}}" data-field="visceralFat" bindinput="onIntInput"/>
+          <text class="input-unit">级</text>
+        </view>
+        <view class="form-row">
+          <text class="form-label">肥胖度</text>
+          <input class="form-input" type="digit" placeholder="%" value="{{obesity}}" data-field="obesity" bindinput="onNumberInput"/>
+          <text class="input-unit">%</text>
+        </view>
+      </view>
+
+      <view class="form-section">
+        <text class="form-section-title green">肌肉数据</text>
+        <view class="form-row">
+          <text class="form-label">肌肉率</text>
+          <input class="form-input" type="digit" placeholder="%" value="{{muscleRate}}" data-field="muscleRate" bindinput="onNumberInput"/>
+          <text class="input-unit">%</text>
+        </view>
+        <view class="form-row">
+          <text class="form-label">骨量</text>
+          <input class="form-input" type="digit" placeholder="kg" value="{{boneMass}}" data-field="boneMass" bindinput="onNumberInput"/>
+          <text class="input-unit">kg</text>
+        </view>
+        <view class="form-row">
+          <text class="form-label">水分率</text>
+          <input class="form-input" type="digit" placeholder="%" value="{{waterRate}}" data-field="waterRate" bindinput="onNumberInput"/>
+          <text class="input-unit">%</text>
+        </view>
+        <view class="form-row">
+          <text class="form-label">基础代谢</text>
+          <input class="form-input" type="number" placeholder="kcal" value="{{bmr}}" data-field="bmr" bindinput="onIntInput"/>
+          <text class="input-unit">kcal</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="modal-actions">
+      <button class="btn btn-green" bindtap="saveHealthRecord">保存记录</button>
+    </view>
+  </view>
+</view>
+
+<!-- ========== 运动记录弹窗 ========== -->
+<view wx:if="{{showExerciseModal}}" class="modal-mask" bindtap="closeExerciseModal">
+  <view class="modal-content" catchtap="preventBubble">
+    <view class="modal-header">
+      <text class="modal-title">记录运动</text>
+      <text class="modal-close" bindtap="closeExerciseModal">×</text>
+    </view>
+
+    <scroll-view class="modal-form" scroll-y="true">
+      <view class="form-row">
+        <text class="form-label">日期</text>
+        <picker mode="date" value="{{exDate}}" bindchange="onExDateChange">
+          <view class="form-input picker-value">{{exDate}}</view>
+        </picker>
+      </view>
+
+      <!-- 运动类型选择 -->
+      <view class="form-row">
+        <text class="form-label">运动类型</text>
+        <view class="ex-type-picker">
+          <view
+            wx:for="{{exerciseTypes}}"
+            wx:key="key"
+            class="ex-type-chip {{exType === item.key ? 'selected' : ''}}"
+            data-type="{{item.key}}"
+            bindtap="onExTypeChange"
+          >
+            <text class="chip-icon">{{item.icon}}</text>
+            <text class="chip-name">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">时长</text>
+        <input class="form-input" type="number" placeholder="分钟（必填）" value="{{exDuration}}" bindinput="onExDurationInput"/>
+        <text class="input-unit">分钟</text>
+      </view>
+
+      <view class="form-row" wx:if="{{exType !== 'custom'}}">
+        <text class="form-label">距离</text>
+        <input class="form-input" type="digit" placeholder="公里（选填）" value="{{exDistance}}" bindinput="onExDistanceInput"/>
+        <text class="input-unit">km</text>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">消耗热量</text>
+        <input class="form-input" type="number" placeholder="kcal（选填）" value="{{exCalories}}" bindinput="onExCaloriesInput"/>
+        <text class="input-unit">kcal</text>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">备注</text>
+        <textarea class="form-textarea" placeholder="运动感受、路线等（选填）" value="{{exNote}}" bindinput="onExNoteInput"/>
+      </view>
+    </scroll-view>
+
+    <view class="modal-actions">
+      <button class="btn btn-purple" bindtap="saveExerciseRecord">保存记录</button>
+    </view>
+  </view>
+</view>

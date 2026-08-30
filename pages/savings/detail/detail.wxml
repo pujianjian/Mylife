@@ -1,0 +1,171 @@
+<view class="page">
+  <!-- 账户信息卡片 -->
+  <view class="account-card" wx:if="{{account}}" style="background: {{accountColor}}20; border-left: 8rpx solid {{accountColor}};">
+    <view class="account-top">
+      <view class="account-icon-wrap" style="background: {{accountColor}}30;">
+        <text class="account-icon-text">{{accountIcon}}</text>
+      </view>
+      <view class="account-meta">
+        <text class="account-name">{{account.name}}</text>
+        <text class="account-category">{{account.categoryName}}</text>
+      </view>
+    </view>
+    <view class="account-balance-row">
+      <text class="balance-label">当前余额</text>
+      <text class="balance-value" style="color: {{accountColor}};">¥{{account.amountStr}}</text>
+    </view>
+    <view wx:if="{{account.note}}" class="account-note-row">
+      <text class="account-note">{{account.note}}</text>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-bar">
+    <view class="action-btn" bindtap="openEditModal" style="color: {{accountColor}}; border-color: {{accountColor}}40;">
+      <text>编辑账户</text>
+    </view>
+    <view class="action-btn" bindtap="openAdjustModal" style="color: {{accountColor}}; border-color: {{accountColor}}40;">
+      <text>调整余额</text>
+    </view>
+    <view class="action-btn danger" bindtap="confirmDelete">
+      <text>删除账户</text>
+    </view>
+  </view>
+
+  <!-- 修改记录 -->
+  <view class="section-title">修改记录</view>
+  <view class="log-list">
+    <view wx:for="{{changeLogs}}" wx:key="id" class="log-card">
+      <view class="log-header">
+        <text class="log-date">{{item.displayDate}}</text>
+        <text class="log-change-count">{{item.changes.length}}项变更</text>
+      </view>
+      <view wx:for="{{item.changes}}" wx:for-item="change" wx:key="field" class="log-change-row {{change.field === 'note' ? 'log-change-row-note' : ''}}">
+        <text class="log-field-label">{{change.label}}</text>
+        <view wx:if="{{change.field === 'note'}}" class="log-note-values">
+          <view class="log-note-line">
+            <text class="log-note-tag old">旧</text>
+            <text class="log-note-text-old">{{change.oldValue || '(空)'}}</text>
+          </view>
+          <view class="log-note-line">
+            <text class="log-note-tag new">新</text>
+            <text class="log-note-text-new">{{change.newValue || '(空)'}}</text>
+          </view>
+        </view>
+        <view wx:else class="log-change-values">
+          <text class="log-old-value">{{change.oldValue}}</text>
+          <text class="log-arrow">→</text>
+          <text class="log-new-value">{{change.newValue}}</text>
+          <text wx:if="{{change.changeAmountStr}}" class="log-change-amount {{change.changeType}}">{{change.changeAmountStr}}</text>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{changeLogs.length === 0}}" class="empty-state">
+      <text class="empty-icon">📋</text>
+      <text>暂无修改记录</text>
+    </view>
+  </view>
+
+  <!-- 流水记录 -->
+  <view class="section-title">流水记录</view>
+  <view class="tx-list">
+    <view wx:for="{{transactions}}" wx:key="date" class="tx-group">
+      <view class="tx-date-row">
+        <text class="tx-date">{{item.displayDate}}</text>
+        <view class="tx-date-summary">
+          <text wx:if="{{item.incomeStr}}" class="tx-income-sum">收入 {{item.incomeStr}}</text>
+          <text wx:if="{{item.expenseStr}}" class="tx-expense-sum">支出 {{item.expenseStr}}</text>
+        </view>
+      </view>
+      <view
+        wx:for="{{item.items}}"
+        wx:for-item="tx"
+        wx:key="id"
+        class="tx-item"
+        data-id="{{tx.id}}"
+        bindlongpress="onTxLongPress"
+      >
+        <view class="tx-left">
+          <text class="tx-category-icon">{{tx.type === 'expense' ? '📤' : '📥'}}</text>
+          <view class="tx-info">
+            <text class="tx-category">{{tx.category}}</text>
+            <text wx:if="{{tx.note}}" class="tx-note">{{tx.note}}</text>
+          </view>
+        </view>
+        <text class="tx-amount {{tx.isExpense ? 'expense' : 'income'}}">{{tx.amountStr}}</text>
+      </view>
+    </view>
+    <view wx:if="{{transactions.length === 0}}" class="empty-state">
+      <text class="empty-icon">📝</text>
+      <text>暂无流水记录</text>
+    </view>
+  </view>
+
+  <!-- 编辑账户弹窗 -->
+  <view wx:if="{{showEditModal}}" class="modal-mask" bindtap="closeEditModal">
+    <view class="modal-content" catchtap="noop">
+      <view class="modal-header">
+        <text class="modal-title">编辑账户</text>
+        <text class="modal-close" bindtap="closeEditModal">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="form-row">
+          <text class="form-label">账户分类</text>
+          <picker mode="selector" range="{{categoryOptions}}" value="{{editCategoryIndex}}" bindchange="onEditCategoryChange">
+            <view class="picker-value">{{categoryOptions[editCategoryIndex]}}</view>
+          </picker>
+        </view>
+        <view class="form-row">
+          <text class="form-label">账户名称</text>
+          <input class="modal-input" placeholder="请输入名称" value="{{editForm.name}}" bindinput="onEditNameInput" />
+        </view>
+        <view class="form-row">
+          <text class="form-label">金额</text>
+          <input class="modal-input" type="digit" placeholder="请输入金额" value="{{editForm.amount}}" bindinput="onEditAmountInput" />
+        </view>
+        <view class="form-row">
+          <text class="form-label">备注</text>
+          <input class="modal-input" placeholder="选填" value="{{editForm.note}}" bindinput="onEditNoteInput" />
+        </view>
+      </view>
+      <view class="modal-actions">
+        <button class="btn btn-cancel" bindtap="closeEditModal">取消</button>
+        <button class="btn btn-save" bindtap="saveEdit">保存</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 调整余额弹窗 -->
+  <view wx:if="{{showAdjustModal}}" class="modal-mask" bindtap="closeAdjustModal">
+    <view class="modal-content" catchtap="noop">
+      <view class="modal-header">
+        <text class="modal-title">调整余额</text>
+        <text class="modal-close" bindtap="closeAdjustModal">×</text>
+      </view>
+      <view class="modal-body">
+        <text class="modal-label">当前余额：¥{{account.amountStr}}</text>
+        <input class="modal-input" type="digit" placeholder="输入新余额" value="{{adjustAmount}}" bindinput="onAdjustInput" />
+      </view>
+      <view class="modal-actions">
+        <button class="btn btn-cancel" bindtap="closeAdjustModal">取消</button>
+        <button class="btn btn-save" bindtap="saveAdjust">确认</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 删除确认弹窗 -->
+  <view wx:if="{{showDeleteConfirm}}" class="modal-mask" bindtap="cancelDelete">
+    <view class="modal-content" catchtap="noop">
+      <view class="modal-header">
+        <text class="modal-title">确认删除</text>
+      </view>
+      <view class="modal-body">
+        <text>删除账户后无法恢复，关联的流水记录也会被删除。是否继续？</text>
+      </view>
+      <view class="modal-actions">
+        <button class="btn btn-cancel" bindtap="cancelDelete">取消</button>
+        <button class="btn btn-delete" bindtap="doDelete">删除</button>
+      </view>
+    </view>
+  </view>
+</view>

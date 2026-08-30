@@ -1,0 +1,443 @@
+.page {
+  min-height: 100vh;
+  background: #F5F6FA;
+  padding-bottom: calc(180rpx + env(safe-area-inset-bottom));
+}
+
+/* ========= 顶部 Tab ========= */
+.top-tabs {
+  display: flex;
+  background: #fff;
+  padding: 16rpx 24rpx;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.top-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  color: #6B7280;
+  font-weight: 500;
+  border-bottom: 4rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.top-tab.active {
+  color: #10B981;
+  border-bottom-color: #10B981;
+  font-weight: 600;
+}
+
+.tab-emoji {
+  font-size: 32rpx;
+}
+
+/* ========= Tab 内容区 ========= */
+.tab-content {
+  padding: 24rpx;
+}
+
+/* ========= 资产 Tab ========= */
+.overview-card {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  border-radius: 24rpx;
+  padding: 40rpx 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(16, 185, 129, 0.3);
+}
+
+.overview-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.overview-label {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8rpx;
+}
+
+.overview-value {
+  font-size: 64rpx;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.overview-sub {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 24rpx;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.2);
+}
+
+.overview-sub-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sub-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8rpx;
+}
+
+.sub-value {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #fff;
+}
+
+.sub-value.green { color: #D1FAE5; }
+.sub-value.red { color: #FEE2E2; }
+
+/* 账户分组 */
+.account-group {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 24rpx 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+  margin-bottom: 8rpx;
+}
+
+.group-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.group-name {
+  font-size: 28rpx;
+  color: #6B7280;
+  font-weight: 500;
+  flex: 1;
+}
+
+.group-total {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.group-total.red { color: #EF4444; }
+.group-total.green { color: #10B981; }
+
+/* 账户项 */
+.account-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F9FAFB;
+}
+
+.account-item:last-child {
+  border-bottom: none;
+}
+
+.acc-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.acc-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.acc-name {
+  font-size: 30rpx;
+  color: #1F2937;
+  font-weight: 500;
+}
+
+.acc-note {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  margin-top: 4rpx;
+}
+
+.acc-amount {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.acc-amount.green { color: #10B981; }
+.acc-amount.red { color: #EF4444; }
+
+/* 添加按钮 */
+.add-btn-wrap {
+  padding: 24rpx 0;
+}
+
+.add-btn {
+  width: 100%;
+  height: 88rpx;
+  background: #10B981;
+  color: #fff;
+  border-radius: 16rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.add-btn::after { border: none; }
+
+/* ========= 图表 Tab ========= */
+.range-tabs {
+  display: flex;
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.range-tab {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 26rpx;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+.range-tab.active {
+  background: #10B981;
+  color: #fff;
+}
+
+/* 图表汇总卡片 */
+.chart-summary-card {
+  display: flex;
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 28rpx 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.chart-summary-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart-summary-label {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  margin-bottom: 8rpx;
+}
+
+.chart-summary-value {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.chart-summary-value.green { color: #10B981; }
+.chart-summary-value.red { color: #EF4444; }
+.chart-summary-value.purple { color: #6366F1; }
+
+/* 图表卡片 */
+.chart-card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.chart-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.chart-card-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1F2937;
+}
+
+.chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: #6B7280;
+}
+
+.legend-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+}
+
+/* ========= 弹窗通用 ========= */
+.modal-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 100%;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 32rpx;
+  padding-bottom: calc(48rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.modal-close {
+  font-size: 48rpx;
+  color: #9CA3AF;
+  line-height: 1;
+}
+
+.modal-form {
+  padding: 0 0 20rpx;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.form-label {
+  width: 120rpx;
+  font-size: 28rpx;
+  color: #6B7280;
+  flex-shrink: 0;
+}
+
+.form-value {
+  flex: 1;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  background: #F3F4F6;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #1F2937;
+}
+
+.form-input {
+  flex: 1;
+  height: 80rpx;
+  background: #F3F4F6;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #1F2937;
+  box-sizing: border-box;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 40rpx;
+}
+
+.btn-delete {
+  flex: 1;
+  height: 88rpx;
+  background: #FEE2E2;
+  color: #EF4444;
+  border-radius: 16rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.btn-save {
+  flex: 1;
+  height: 88rpx;
+  background: #10B981;
+  color: #fff;
+  border-radius: 16rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.btn-delete::after,
+.btn-save::after { border: none; }
+
+/* ========= 空状态 ========= */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 40rpx;
+  color: #9CA3AF;
+  font-size: 28rpx;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  margin-top: 8rpx;
+}

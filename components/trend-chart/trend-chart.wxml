@@ -1,0 +1,17 @@
+<view class="trend-chart-container">
+  <canvas
+    type="2d"
+    id="trendChart"
+    class="trend-chart-canvas"
+    bindtouchstart="onTouch"
+    bindtouchmove="onTouch"
+    bindtouchend="onTouchEnd"
+  ></canvas>
+  <view class="trend-tooltip {{showTooltip ? 'show' : ''}}" style="left: {{tooltipX}}px; top: {{tooltipY}}px;">
+    <view class="trend-tooltip-date">{{tooltipDate}}</view>
+    <view class="trend-tooltip-value">{{tooltipValue}}</view>
+  </view>
+  <view wx:if="{{isEmpty}}" class="trend-chart-empty">
+    <text class="empty-text">暂无数据</text>
+  </view>
+</view>

@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "chart": "/components/chart/chart"
+  },
+  "navigationBarTitleText": "储存记账",
+  "backgroundColor": "#F5F6FA"
+}

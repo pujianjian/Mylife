@@ -1,0 +1,238 @@
+.backup-page {
+  padding-bottom: 40rpx;
+}
+
+.backup-time {
+  display: block;
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+  margin-bottom: 16rpx;
+  text-align: center;
+}
+
+/* 导出/导入区域 */
+.section-card .section-title {
+  margin-bottom: 16rpx;
+}
+
+.card-desc {
+  display: block;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  margin-bottom: 24rpx;
+  line-height: 1.6;
+}
+
+.export-preview {
+  margin-bottom: 24rpx;
+}
+
+.export-textarea {
+  width: 100%;
+  height: 280rpx;
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 20rpx;
+  font-size: 22rpx;
+  color: var(--text-secondary);
+  box-sizing: border-box;
+  font-family: monospace;
+}
+
+.import-textarea {
+  width: 100%;
+  height: 240rpx;
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 20rpx;
+  font-size: 24rpx;
+  color: var(--text-primary);
+  box-sizing: border-box;
+  margin-bottom: 20rpx;
+  font-family: monospace;
+}
+
+.btn-group {
+  display: flex;
+  gap: 20rpx;
+}
+
+.btn-group .btn {
+  flex: 1;
+}
+
+.import-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.import-actions .btn {
+  flex: 1;
+}
+
+.btn-secondary {
+  background: var(--weight-color);
+  color: var(--white);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary);
+  box-shadow: 0 0 0 2rpx var(--primary) inset;
+}
+
+.btn-secondary.btn-outline {
+  color: var(--weight-color);
+  box-shadow: 0 0 0 2rpx var(--weight-color) inset;
+}
+
+.import-divider {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1rpx;
+  background: var(--border);
+}
+
+.divider-text {
+  padding: 0 20rpx;
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+}
+
+/* 关于卡片 */
+.about-card {
+  text-align: center;
+  padding: 24rpx;
+}
+
+.about-text {
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+  line-height: 1.6;
+}
+
+/* 预览弹窗 */
+.preview-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 48rpx;
+}
+
+.preview-dialog {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-header {
+  padding: 32rpx;
+  border-bottom: 1rpx solid var(--border);
+}
+
+.preview-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.preview-body {
+  padding: 32rpx;
+  overflow-y: auto;
+}
+
+.preview-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid var(--border);
+}
+
+.preview-info-label {
+  font-size: 28rpx;
+  color: var(--text-secondary);
+}
+
+.preview-info-value {
+  font-size: 28rpx;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.preview-tip {
+  display: block;
+  font-size: 28rpx;
+  color: var(--text-primary);
+  margin: 32rpx 0 20rpx;
+}
+
+.mode-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.mode-option {
+  padding: 24rpx;
+  border-radius: var(--radius);
+  background: var(--bg);
+  border: 2rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.mode-option.active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+
+.mode-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8rpx;
+}
+
+.mode-desc {
+  display: block;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+.preview-footer {
+  display: flex;
+  gap: 20rpx;
+  padding: 24rpx 32rpx;
+  border-top: 1rpx solid var(--border);
+}
+
+.preview-footer .btn {
+  flex: 1;
+}
+
+.btn-cancel {
+  background: var(--bg);
+  color: var(--text-secondary);
+}
+
+.btn-confirm {
+  background: var(--primary);
+  color: var(--white);
+}

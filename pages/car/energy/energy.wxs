@@ -1,0 +1,13 @@
+// pages/car/energy/energy.wxs
+// 计算金额预览（油费：L×元/L；电：度数×元/度）
+var formatResult = function(a, b) {
+  if (!a || !b) return '0.00';
+  var x = parseFloat(a);
+  var y = parseFloat(b);
+  if (isNaN(x) || isNaN(y)) return '0.00';
+  return (x * y).toFixed(2);
+};
+
+module.exports = {
+  formatResult: formatResult
+};

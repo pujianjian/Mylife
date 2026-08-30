@@ -1,0 +1,111 @@
+<view class="container backup-page">
+  <text wx:if="{{lastBackupTime}}" class="backup-time">上次备份：{{lastBackupTime}}</text>
+
+  <!-- 导出区域 -->
+  <view class="section-card card">
+    <text class="section-title">📤 导出数据</text>
+    <text class="card-desc">将数据导出为 JSON 格式，可保存到剪贴板或发送给微信好友</text>
+
+    <view class="export-preview">
+      <textarea class="export-textarea" value="{{exportText}}" disabled maxlength="-1" />
+    </view>
+
+    <view class="btn-group">
+      <view class="btn btn-primary" bindtap="copyToClipboard">复制到剪贴板</view>
+      <view class="btn btn-secondary" bindtap="exportToFile">发送备份文件</view>
+    </view>
+  </view>
+
+  <!-- 导入区域 -->
+  <view class="section-card card">
+    <text class="section-title">📥 导入数据</text>
+    <text class="card-desc">从剪贴板、聊天记录文件或手动粘贴 JSON 数据导入</text>
+
+    <view class="import-actions">
+      <view class="btn btn-primary btn-outline" bindtap="importFromClipboard">从剪贴板导入</view>
+      <view class="btn btn-secondary btn-outline" bindtap="chooseFile">选择文件</view>
+    </view>
+
+    <view class="import-divider">
+      <text class="divider-line"></text>
+      <text class="divider-text">或手动粘贴</text>
+      <text class="divider-line"></text>
+    </view>
+
+    <textarea
+      class="import-textarea"
+      placeholder="请在此粘贴 JSON 格式的备份数据"
+      value="{{importText}}"
+      bindinput="onImportTextInput"
+      maxlength="-1"
+    />
+    <view class="btn btn-primary" bindtap="parseManualInput">解析并导入</view>
+  </view>
+
+  <!-- 关于 -->
+  <view class="about-card card">
+    <text class="about-text">数据存储在本地，换机或清理缓存前请务必备份。</text>
+  </view>
+
+  <!-- 导入预览弹窗 -->
+  <view wx:if="{{showPreview}}" class="preview-mask" bindtap="cancelImport">
+    <view class="preview-dialog" catchtap="preventBubble">
+      <view class="preview-header">
+        <text class="preview-title">确认导入数据</text>
+      </view>
+
+      <view class="preview-body">
+        <view class="preview-info">
+          <text class="preview-info-label">备份时间</text>
+          <text class="preview-info-value">{{previewData.exportTime}}</text>
+        </view>
+        <view class="preview-info">
+          <text class="preview-info-label">健康记录</text>
+          <text class="preview-info-value">{{previewData.weightCount}} 条</text>
+        </view>
+        <view class="preview-info">
+          <text class="preview-info-label">储存账户</text>
+          <text class="preview-info-value">{{previewData.assetCount}} 条</text>
+        </view>
+        <view class="preview-info">
+          <text class="preview-info-label">汽车账目</text>
+          <text class="preview-info-value">{{previewData.carCount}} 条</text>
+        </view>
+        <view class="preview-info">
+          <text class="preview-info-label">实物资产</text>
+          <text class="preview-info-value">{{previewData.physicalCount}} 条</text>
+        </view>
+        <view class="preview-info">
+          <text class="preview-info-label">心愿单</text>
+          <text class="preview-info-value">{{previewData.wishlistCount}} 条</text>
+        </view>
+
+        <text class="preview-tip">请选择导入方式：</text>
+
+        <view class="mode-selector">
+          <view
+            class="mode-option {{importMode === 'merge' ? 'active' : ''}}"
+            data-mode="merge"
+            bindtap="onImportModeChange"
+          >
+            <text class="mode-title">合并导入</text>
+            <text class="mode-desc">保留现有数据，相同记录会被覆盖</text>
+          </view>
+          <view
+            class="mode-option {{importMode === 'replace' ? 'active' : ''}}"
+            data-mode="replace"
+            bindtap="onImportModeChange"
+          >
+            <text class="mode-title">覆盖导入</text>
+            <text class="mode-desc">清空现有数据，只保留备份内容</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="preview-footer">
+        <view class="btn btn-cancel" bindtap="cancelImport">取消</view>
+        <view class="btn btn-confirm" bindtap="confirmImport">确认导入</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,448 @@
+<view class="page">
+  <!-- 顶部 Tab -->
+  <view class="top-tabs">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="label"
+      class="top-tab {{activeTab === index ? 'active' : ''}}"
+      data-index="{{index}}"
+      bindtap="onTabChange"
+    >
+      <text class="tab-emoji">{{item.icon}}</text>
+      <text class="tab-text">{{item.label}}</text>
+    </view>
+  </view>
+
+  <!-- 概览卡片 -->
+  <view class="overview-card">
+    <view class="overview-main">
+      <text class="overview-label">家庭净资产</text>
+      <text class="overview-value">¥{{summary.netWorth}}</text>
+    </view>
+    <view class="overview-sub">
+      <view class="overview-sub-item">
+        <text class="sub-label">总资产</text>
+        <text class="sub-value green">¥{{summary.totalAssets}}</text>
+      </view>
+      <view class="overview-sub-item">
+        <text class="sub-label">总负债</text>
+        <text class="sub-value red">¥{{summary.totalLiabilities}}</text>
+      </view>
+    </view>
+    <view class="overview-sub overview-sub-second">
+      <view class="overview-sub-item">
+        <text class="sub-label">本月收入</text>
+        <text class="sub-value green">¥{{summary.monthIncome}}</text>
+      </view>
+      <view class="overview-sub-item">
+        <text class="sub-label">本月支出</text>
+        <text class="sub-value red">¥{{summary.monthExpense}}</text>
+      </view>
+      <view class="overview-sub-item">
+        <text class="sub-label">本月结余</text>
+        <text class="sub-value purple">¥{{summary.monthBalance}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 收入 Tab ==================== -->
+  <view wx:if="{{activeTab === 0}}" class="tab-content">
+    <view class="cycle-tabs">
+      <view
+        wx:for="{{incomeCycleOptions}}"
+        wx:key="key"
+        class="cycle-tab {{incomeCycle === item.key ? 'active' : ''}}"
+        data-cycle="{{item.key}}"
+        bindtap="onIncomeCycleChange"
+      >{{item.name}}</view>
+    </view>
+
+    <view wx:for="{{incomeGroups}}" wx:key="key" class="record-group">
+      <view class="group-header">
+        <text class="group-icon">{{item.icon}}</text>
+        <text class="group-name">{{item.name}}</text>
+        <text class="group-total green">¥{{item.totalStr}}</text>
+      </view>
+      <view
+        class="record-item"
+        wx:for="{{item.items}}"
+        wx:for-item="rec"
+        wx:key="id"
+        data-id="{{rec.id}}"
+        bindtap="openEditIncomeModal"
+      >
+        <view class="rec-icon" style="background: {{item.color}}20;">
+          <text>{{item.icon}}</text>
+        </view>
+        <view class="rec-info">
+          <text class="rec-title">{{rec.sourceLabel}}</text>
+          <text class="rec-date">{{rec.dateShort}}</text>
+        </view>
+        <text wx:if="{{rec.note}}" class="rec-note">{{rec.note}}</text>
+        <text class="rec-amount green">+¥{{rec.amountStr}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{incomeGroups.length === 0}}" class="empty-state">
+      <text class="empty-icon">💰</text>
+      <text>暂无收入记录</text>
+    </view>
+
+    <view class="add-btn-wrap">
+      <button class="add-btn" bindtap="openAddIncomeModal">+ 添加收入</button>
+    </view>
+  </view>
+
+  <!-- ==================== 开支 Tab ==================== -->
+  <view wx:if="{{activeTab === 1}}" class="tab-content">
+    <view class="cycle-tabs">
+      <view
+        wx:for="{{expenseCycleOptions}}"
+        wx:key="key"
+        class="cycle-tab {{expenseCycle === item.key ? 'active' : ''}}"
+        data-cycle="{{item.key}}"
+        bindtap="onExpenseCycleChange"
+      >{{item.name}}</view>
+    </view>
+
+    <view wx:for="{{expenseGroups}}" wx:key="key" class="record-group">
+      <view class="group-header">
+        <text class="group-icon">{{item.icon}}</text>
+        <text class="group-name">{{item.name}}</text>
+        <text class="group-total red">¥{{item.totalStr}}</text>
+      </view>
+      <view
+        class="record-item"
+        wx:for="{{item.items}}"
+        wx:for-item="rec"
+        wx:key="id"
+        data-id="{{rec.id}}"
+        bindtap="openEditExpenseModal"
+      >
+        <view class="rec-icon" style="background: {{item.color}}20;">
+          <text>{{item.icon}}</text>
+        </view>
+        <view class="rec-info">
+          <text class="rec-title">{{rec.payerLabel}}</text>
+          <text class="rec-date">{{rec.dateShort}}</text>
+        </view>
+        <text wx:if="{{rec.note}}" class="rec-note">{{rec.note}}</text>
+        <text class="rec-amount red">-¥{{rec.amountStr}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{expenseGroups.length === 0}}" class="empty-state">
+      <text class="empty-icon">🏠</text>
+      <text>暂无开支记录</text>
+    </view>
+
+    <view class="add-btn-wrap">
+      <button class="add-btn add-btn-red" bindtap="openAddExpenseModal">+ 添加开支</button>
+    </view>
+  </view>
+
+  <!-- ==================== 资产 Tab ==================== -->
+  <view wx:if="{{activeTab === 2}}" class="tab-content">
+    <view wx:for="{{assetGroups}}" wx:key="key" class="record-group">
+      <view class="group-header">
+        <text class="group-icon">{{item.icon}}</text>
+        <text class="group-name">{{item.name}}</text>
+        <text class="group-total {{item.isLiability ? 'red' : 'green'}}">
+          {{item.isLiability ? '-' : ''}}¥{{item.totalStr}}
+        </text>
+      </view>
+      <view
+        class="record-item"
+        wx:for="{{item.assets}}"
+        wx:for-item="ast"
+        wx:key="id"
+        data-id="{{ast.id}}"
+        bindtap="openEditAssetModal"
+      >
+        <view class="rec-icon" style="background: {{item.color}}20;">
+          <text>{{item.icon}}</text>
+        </view>
+        <view class="rec-info">
+          <text class="rec-title">{{ast.name}}</text>
+          <text wx:if="{{ast.note}}" class="rec-date">{{ast.note}}</text>
+        </view>
+        <text class="rec-amount {{item.isLiability ? 'red' : 'green'}}">
+          {{item.isLiability ? '-' : ''}}¥{{ast.amountStr}}
+        </text>
+      </view>
+    </view>
+
+    <view wx:if="{{assetGroups.length === 0}}" class="empty-state">
+      <text class="empty-icon">📊</text>
+      <text>暂无资产记录</text>
+    </view>
+
+    <view class="add-btn-wrap">
+      <button class="add-btn" bindtap="openAddAssetModal">+ 添加资产</button>
+    </view>
+  </view>
+
+  <!-- ==================== 趋势 Tab ==================== -->
+  <view wx:if="{{activeTab === 3}}" class="tab-content">
+    <view class="range-tabs">
+      <view
+        wx:for="{{chartRanges}}"
+        wx:key="key"
+        class="range-tab {{chartRange === item.key ? 'active' : ''}}"
+        data-range="{{item.key}}"
+        bindtap="onChartRangeChange"
+      >{{item.name}}</view>
+    </view>
+
+    <view class="chart-card" wx:if="{{incomeLines.length > 0}}">
+      <view class="chart-card-header">
+        <text class="chart-card-title">收入趋势</text>
+        <view class="chart-legend chart-legend-multi">
+          <view class="legend-item">
+            <view class="legend-dot" style="background: #3B82F6;"></view>
+            <text class="legend-text">男方</text>
+          </view>
+          <view class="legend-item">
+            <view class="legend-dot" style="background: #EC4899;"></view>
+            <text class="legend-text">女方</text>
+          </view>
+          <view class="legend-item">
+            <view class="legend-dot" style="background: #10B981;"></view>
+            <text class="legend-text">共同</text>
+          </view>
+          <view class="legend-item">
+            <view class="legend-dot" style="background: #F59E0B;"></view>
+            <text class="legend-text">合计</text>
+          </view>
+        </view>
+      </view>
+      <chart
+        lines="{{incomeLines}}"
+        unit="¥"
+      ></chart>
+    </view>
+
+    <view class="chart-card" wx:if="{{expenseTrendData.length > 0}}">
+      <view class="chart-card-header">
+        <text class="chart-card-title">支出趋势</text>
+        <view class="chart-legend">
+          <view class="legend-dot" style="background: #FBBF24;"></view>
+          <text class="legend-text">月支出</text>
+        </view>
+      </view>
+      <chart
+        data="{{expenseTrendData}}"
+        lineColor="#FBBF24"
+        gradientStart="rgba(251,191,36,0.3)"
+        gradientEnd="rgba(251,191,36,0.05)"
+        valueKey="value"
+        unit="¥"
+      ></chart>
+    </view>
+
+    <view class="chart-card" wx:if="{{assetTrendData.length > 0}}">
+      <view class="chart-card-header">
+        <text class="chart-card-title">资产趋势</text>
+        <view class="chart-legend">
+          <view class="legend-dot" style="background: #34D399;"></view>
+          <text class="legend-text">总资产</text>
+        </view>
+      </view>
+      <chart
+        data="{{assetTrendData}}"
+        lineColor="#34D399"
+        gradientStart="rgba(52,211,153,0.3)"
+        gradientEnd="rgba(52,211,153,0.05)"
+        valueKey="value"
+        unit="¥"
+      ></chart>
+    </view>
+
+    <view class="chart-card" wx:if="{{liabilityTrendData.length > 0}}">
+      <view class="chart-card-header">
+        <text class="chart-card-title">负债趋势</text>
+        <view class="chart-legend">
+          <view class="legend-dot" style="background: #F87171;"></view>
+          <text class="legend-text">总负债</text>
+        </view>
+      </view>
+      <chart
+        data="{{liabilityTrendData}}"
+        lineColor="#F87171"
+        gradientStart="rgba(248,113,113,0.3)"
+        gradientEnd="rgba(248,113,113,0.05)"
+        valueKey="value"
+        unit="¥"
+      ></chart>
+    </view>
+
+    <view class="chart-card" wx:if="{{netWorthTrendData.length > 0}}">
+      <view class="chart-card-header">
+        <text class="chart-card-title">净资产趋势</text>
+        <view class="chart-legend">
+          <view class="legend-dot" style="background: #6366F1;"></view>
+          <text class="legend-text">净资产</text>
+        </view>
+      </view>
+      <chart
+        data="{{netWorthTrendData}}"
+        lineColor="#6366F1"
+        gradientStart="rgba(99,102,241,0.3)"
+        gradientEnd="rgba(99,102,241,0.05)"
+        valueKey="value"
+        unit="¥"
+      ></chart>
+    </view>
+
+    <view wx:if="{{incomeTrendData.length === 0}}" class="empty-state">
+      <text class="empty-icon">📈</text>
+      <text>暂无趋势数据</text>
+      <text class="empty-hint">添加收支记录后会自动生成快照</text>
+    </view>
+  </view>
+
+  <!-- ==================== 收入弹窗 ==================== -->
+  <view wx:if="{{modalType === 'income'}}" class="modal-mask" bindtap="closeModal">
+    <view class="modal-content" catchtap="noop">
+      <view class="modal-header">
+        <text class="modal-title">{{modalTitle}}</text>
+        <text class="modal-close" bindtap="closeModal">×</text>
+      </view>
+
+      <view class="modal-form">
+        <view class="form-row">
+          <text class="form-label">类型</text>
+          <picker mode="selector" range="{{incomeTypeOptions}}" value="{{incomeForm.typeIndex}}" bindchange="onIncomeTypeChange">
+            <view class="form-value">{{incomeTypeOptions[incomeForm.typeIndex]}}</view>
+          </picker>
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">来源</text>
+          <picker mode="selector" range="{{incomeSourceOptions}}" value="{{incomeForm.sourceIndex}}" bindchange="onIncomeSourceChange">
+            <view class="form-value">{{incomeSourceOptions[incomeForm.sourceIndex]}}</view>
+          </picker>
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">金额</text>
+          <input class="form-input" type="digit" placeholder="0.00" value="{{incomeForm.amount}}" bindinput="onIncomeAmountInput" />
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">日期</text>
+          <picker mode="date" value="{{incomeForm.date}}" bindchange="onIncomeDateChange">
+            <view class="form-value">{{incomeForm.date}}</view>
+          </picker>
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">每月固定</text>
+          <switch checked="{{incomeForm.recurring}}" bindchange="onIncomeRecurringChange" color="#10B981" />
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">备注</text>
+          <input class="form-input" placeholder="选填" value="{{incomeForm.note}}" bindinput="onIncomeNoteInput" />
+        </view>
+      </view>
+
+      <view class="modal-actions">
+        <button wx:if="{{editingId}}" class="btn-delete" bindtap="deleteIncome">删除</button>
+        <button class="btn-save" bindtap="saveIncome">保存</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 开支弹窗 ==================== -->
+  <view wx:if="{{modalType === 'expense'}}" class="modal-mask" bindtap="closeModal">
+    <view class="modal-content" catchtap="noop">
+      <view class="modal-header">
+        <text class="modal-title">{{modalTitle}}</text>
+        <text class="modal-close" bindtap="closeModal">×</text>
+      </view>
+
+      <view class="modal-form">
+        <view class="form-row">
+          <text class="form-label">类型</text>
+          <picker mode="selector" range="{{expenseTypeOptions}}" value="{{expenseForm.typeIndex}}" bindchange="onExpenseTypeChange">
+            <view class="form-value">{{expenseTypeOptions[expenseForm.typeIndex]}}</view>
+          </picker>
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">支付方</text>
+          <picker mode="selector" range="{{expensePayerOptions}}" value="{{expenseForm.payerIndex}}" bindchange="onExpensePayerChange">
+            <view class="form-value">{{expensePayerOptions[expenseForm.payerIndex]}}</view>
+          </picker>
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">金额</text>
+          <input class="form-input" type="digit" placeholder="0.00" value="{{expenseForm.amount}}" bindinput="onExpenseAmountInput" />
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">日期</text>
+          <picker mode="date" value="{{expenseForm.date}}" bindchange="onExpenseDateChange">
+            <view class="form-value">{{expenseForm.date}}</view>
+          </picker>
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">每月固定</text>
+          <switch checked="{{expenseForm.recurring}}" bindchange="onExpenseRecurringChange" color="#10B981" />
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">备注</text>
+          <input class="form-input" placeholder="选填" value="{{expenseForm.note}}" bindinput="onExpenseNoteInput" />
+        </view>
+      </view>
+
+      <view class="modal-actions">
+        <button wx:if="{{editingId}}" class="btn-delete" bindtap="deleteExpense">删除</button>
+        <button class="btn-save" bindtap="saveExpense">保存</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 资产弹窗 ==================== -->
+  <view wx:if="{{modalType === 'asset'}}" class="modal-mask" bindtap="closeModal">
+    <view class="modal-content" catchtap="noop">
+      <view class="modal-header">
+        <text class="modal-title">{{modalTitle}}</text>
+        <text class="modal-close" bindtap="closeModal">×</text>
+      </view>
+
+      <view class="modal-form">
+        <view class="form-row">
+          <text class="form-label">类型</text>
+          <picker mode="selector" range="{{assetTypeOptions}}" value="{{assetForm.typeIndex}}" bindchange="onAssetTypeChange">
+            <view class="form-value">{{assetTypeOptions[assetForm.typeIndex]}}</view>
+          </picker>
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">名称</text>
+          <input class="form-input" placeholder="如：招商银行存款" value="{{assetForm.name}}" bindinput="onAssetNameInput" />
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">金额</text>
+          <input class="form-input" type="digit" placeholder="0.00" value="{{assetForm.amount}}" bindinput="onAssetAmountInput" />
+        </view>
+
+        <view class="form-row">
+          <text class="form-label">备注</text>
+          <input class="form-input" placeholder="选填" value="{{assetForm.note}}" bindinput="onAssetNoteInput" />
+        </view>
+      </view>
+
+      <view class="modal-actions">
+        <button wx:if="{{editingId}}" class="btn-delete" bindtap="deleteAsset">删除</button>
+        <button class="btn-save" bindtap="saveAsset">保存</button>
+      </view>
+    </view>
+  </view>
+</view>
